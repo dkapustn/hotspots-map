@@ -80,9 +80,11 @@
   @media (min-width: 768px) {
     .pt-safe-content { padding-top: 2rem; }
   }
-  /* Отступ снизу для контента над BottomNav: учитывает safe-area + высоту бара. */
+  /* Отступ снизу для контента над BottomNav.
+     BottomNav: h-16 (4rem) + капнутый safe-area до 0.75rem = ~4.75rem.
+     Добавляем 0.75rem зазора → суммарно 5.5rem. */
   .pb-safe-nav {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 6rem);
+    padding-bottom: 5.5rem;
   }
   @media (min-width: 768px) {
     .pb-safe-nav { padding-bottom: 2rem; }

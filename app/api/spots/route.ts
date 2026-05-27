@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
 
   let q = supabase
     .from("spots")
-    .select("*, profiles(id, username, avatar_url)")
+    .select("*, profiles!spots_user_id_fkey(id, username, avatar_url)")
     .order("created_at", { ascending: false })
     .limit(500);
 
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       longitude,
       photo_path,
     })
-    .select("*, profiles(id, username, avatar_url)")
+    .select("*, profiles!spots_user_id_fkey(id, username, avatar_url)")
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

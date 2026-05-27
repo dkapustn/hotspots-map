@@ -8,7 +8,7 @@ export default async function HomePage() {
   const supabase = createClient();
   const { data } = await supabase
     .from("spots")
-    .select("*, profiles(id, username, avatar_url)")
+    .select("*, profiles!spots_user_id_fkey(id, username, avatar_url)")
     .order("created_at", { ascending: false })
     .limit(500);
 

@@ -21,17 +21,17 @@ export default async function MyProfilePage() {
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase
       .from("spots")
-      .select("*, profiles(id, username, avatar_url)")
+      .select("*, profiles!spots_user_id_fkey(id, username, avatar_url)")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
     supabase
       .from("visits")
-      .select("spot_id, visited_at, spots(*, profiles(id, username, avatar_url))")
+      .select("spot_id, visited_at, spots!visits_spot_id_fkey(*, profiles!spots_user_id_fkey(id, username, avatar_url))")
       .eq("user_id", user.id)
       .order("visited_at", { ascending: false }),
     supabase
       .from("likes")
-      .select("spot_id, created_at, spots(*, profiles(id, username, avatar_url))")
+      .select("spot_id, created_at, spots!likes_spot_id_fkey(*, profiles!spots_user_id_fkey(id, username, avatar_url))")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
   ]);

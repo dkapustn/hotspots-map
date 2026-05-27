@@ -12,7 +12,7 @@ export async function GET(
   const supabase = createClient();
   const { data, error } = await supabase
     .from("comments")
-    .select("*, profiles(id, username, avatar_url)")
+    .select("*, profiles!comments_user_id_fkey(id, username, avatar_url)")
     .eq("spot_id", params.id)
     .order("created_at", { ascending: false })
     .limit(100);
@@ -38,7 +38,7 @@ export async function POST(
   const { data, error } = await supabase
     .from("comments")
     .insert({ user_id: user.id, spot_id: params.id, body: parsed.data.body.trim() })
-    .select("*, profiles(id, username, avatar_url)")
+    .select("*, profiles!comments_user_id_fkey(id, username, avatar_url)")
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });

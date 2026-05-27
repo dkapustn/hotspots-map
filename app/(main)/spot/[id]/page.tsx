@@ -14,7 +14,7 @@ export default async function SpotPage({ params }: { params: { id: string } }) {
   const [{ data: spot }, statsRes, userLikeRes, userVisitRes, commentsRes] = await Promise.all([
     supabase
       .from("spots")
-      .select("*, profiles(id, username, avatar_url)")
+      .select("*, profiles!spots_user_id_fkey(id, username, avatar_url)")
       .eq("id", params.id)
       .maybeSingle(),
     supabase
@@ -40,7 +40,7 @@ export default async function SpotPage({ params }: { params: { id: string } }) {
       : Promise.resolve({ data: null } as any),
     supabase
       .from("comments")
-      .select("*, profiles(id, username, avatar_url)")
+      .select("*, profiles!comments_user_id_fkey(id, username, avatar_url)")
       .eq("spot_id", params.id)
       .order("created_at", { ascending: false })
       .limit(50),

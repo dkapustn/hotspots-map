@@ -31,7 +31,7 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
           if (!id) return;
           const { data } = await supabase
             .from("spots")
-            .select("*, profiles(id, username, avatar_url)")
+            .select("*, profiles!spots_user_id_fkey(id, username, avatar_url)")
             .eq("id", id)
             .maybeSingle();
           if (!data) return;

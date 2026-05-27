@@ -23,7 +23,7 @@ export default async function PublicProfilePage({ params }: { params: { userId: 
   const [spotsRes, visitsRes, likesRes] = await Promise.all([
     supabase
       .from("spots")
-      .select("*, profiles(id, username, avatar_url)")
+      .select("*, profiles!spots_user_id_fkey(id, username, avatar_url)")
       .eq("user_id", profile.id)
       .order("created_at", { ascending: false }),
     supabase.from("visits").select("*", { count: "exact", head: true }).eq("user_id", profile.id),
