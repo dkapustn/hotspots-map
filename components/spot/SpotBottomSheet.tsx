@@ -8,6 +8,7 @@ import type { SpotWithAuthor } from "@/lib/types";
 import { initials, formatRelativeTime } from "@/lib/utils";
 import { DistanceBadge } from "@/components/spot/DistanceBadge";
 import { ShareButton } from "@/components/spot/ShareButton";
+import { PhotoLightbox } from "@/components/spot/PhotoLightbox";
 
 export function SpotBottomSheet({
   spot,
@@ -23,14 +24,16 @@ export function SpotBottomSheet({
     <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
       <SheetContent side="bottom" className="md:max-w-lg md:mx-auto md:rounded-3xl md:mb-6 md:inset-x-0">
         <div className="px-5 pt-3 pb-6">
-          <div
-            className="aspect-[4/3] w-full overflow-hidden rounded-2xl bg-muted"
-            style={{
-              backgroundImage: `url('${spot.photo_url}')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
+          <PhotoLightbox src={spot.photo_url} alt={spot.title}>
+            <div
+              className="aspect-[4/3] w-full overflow-hidden rounded-2xl bg-muted"
+              style={{
+                backgroundImage: `url('${spot.photo_url}')`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+          </PhotoLightbox>
 
           <div className="mt-4 flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">

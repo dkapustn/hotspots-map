@@ -12,6 +12,10 @@ const MapView = dynamic(() => import("./MapView").then((m) => m.MapView), {
   ),
 });
 
-export function MapClient(props: { spots: SpotWithAuthor[]; onSpotClick: (s: SpotWithAuthor) => void }) {
+export function MapClient(props: {
+  spots: SpotWithAuthor[];
+  onSpotClick: (s: SpotWithAuthor) => void;
+  flyToSpot?: SpotWithAuthor | null;
+}) {
   return <MapView {...props} />;
 }

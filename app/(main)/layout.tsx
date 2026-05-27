@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { BottomNav } from "@/components/nav/BottomNav";
 import { DesktopSidebar } from "@/components/nav/DesktopSidebar";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
@@ -39,6 +40,8 @@ export default async function MainLayout({ children }: { children: React.ReactNo
           <BottomNav />
         </div>
       </div>
+
+      <InstallPrompt />
     </>
   );
 }

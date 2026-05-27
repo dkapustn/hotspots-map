@@ -6,6 +6,7 @@ import { attachAuthor } from "@/lib/spot-helpers";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Achievements } from "@/components/profile/Achievements";
 import { initials, formatRelativeTime } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -44,6 +45,16 @@ export default async function MyProfilePage() {
     .map((l: any) => (l.spots ? attachAuthor(l.spots) : null))
     .filter(Boolean) as ReturnType<typeof attachAuthor>[];
 
+  // Считаем общее число лайков, полученных пользователем (на всех его метках).
+  let likesReceived = 0;
+  if (mySpots.length > 0) {
+    const { count } = await supabase
+      .from("likes")
+      .select("*", { count: "exact", head: true })
+      .in("spot_id", mySpots.map((s) => s.id));
+    likesReceived = count ?? 0;
+  }
+
   return (
     <div className="h-full overflow-y-auto pb-safe-nav">
       <div className="mx-auto max-w-3xl px-4 md:px-8 pt-safe-content">
@@ -72,8 +83,20 @@ export default async function MyProfilePage() {
           <div className="mt-5 grid grid-cols-3 gap-3 text-center">
             <Stat icon={MapPin} value={mySpots.length} label="Меток" />
             <Stat icon={Footprints} value={visited.length} label="Посещено" />
-            <Stat icon={Heart} value={liked.length} label="Лайков" />
+            <Stat icon={Heart} value={likesReceived} label="Получено лайков" />
           </div>
+        </div>
+
+        {/* Достижения */}
+        <div className="mt-6">
+          <Achievements
+            stats={{
+              spotsCount: mySpots.length,
+              visitsCount: visited.length,
+              likesReceived,
+              likesGiven: liked.length,
+            }}
+          />
         </div>
 
         <Tabs defaultValue="mine" className="mt-6">

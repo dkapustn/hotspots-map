@@ -23,13 +23,17 @@ const ATTRIBUTION =
 interface MapViewProps {
   spots: SpotWithAuthor[];
   onSpotClick: (spot: SpotWithAuthor) => void;
+  flyToSpot?: SpotWithAuthor | null;
 }
 
-export function MapView({ spots, onSpotClick }: MapViewProps) {
+const VIEW_STORAGE_KEY = "hotspots:map-view:v1";
+
+export function MapView({ spots, onSpotClick, flyToSpot }: MapViewProps) {
   const { resolvedTheme } = useTheme();
   const [userPos, setUserPos] = useState<Coords | null>(null);
   const [locating, setLocating] = useState(false);
   const mapRef = useRef<L.Map | null>(null);
+  const hasAutoLocated = useRef(false);
 
   const handleLocate = useCallback(async () => {
     setLocating(true);
@@ -47,11 +51,66 @@ export function MapView({ spots, onSpotClick }: MapViewProps) {
     }
   }, []);
 
-  // Auto-locate once on mount (best-effort; user can decline)
+  // Auto-locate once on mount IF нет сохранённой позиции (best-effort).
   useEffect(() => {
-    handleLocate().catch(() => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (hasAutoLocated.current) return;
+    hasAutoLocated.current = true;
+
+    const saved = sessionStorage.getItem(VIEW_STORAGE_KEY);
+    if (!saved) {
+      handleLocate().catch(() => {});
+    }
+  }, [handleLocate]);
+
+  // Восстанавливаем сохранённую позицию карты + сохраняем при движении.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    // Restore
+    const saved = sessionStorage.getItem(VIEW_STORAGE_KEY);
+    if (saved) {
+      try {
+        const { lat, lng, zoom } = JSON.parse(saved) as {
+          lat: number;
+          lng: number;
+          zoom: number;
+        };
+        if (
+          Number.isFinite(lat) &&
+          Number.isFinite(lng) &&
+          Number.isFinite(zoom)
+        ) {
+          map.setView([lat, lng], zoom, { animate: false });
+        }
+      } catch {
+        /* ignore corrupted state */
+      }
+    }
+
+    // Save on move/zoom (debounced via single moveend)
+    const save = () => {
+      const c = map.getCenter();
+      const z = map.getZoom();
+      sessionStorage.setItem(
+        VIEW_STORAGE_KEY,
+        JSON.stringify({ lat: c.lat, lng: c.lng, zoom: z }),
+      );
+    };
+    map.on("moveend", save);
+    return () => {
+      map.off("moveend", save);
+    };
   }, []);
+
+  // Smooth fly-to when внешний код просит сфокусироваться на метке.
+  useEffect(() => {
+    if (!flyToSpot || !mapRef.current) return;
+    const targetZoom = Math.max(mapRef.current.getZoom(), 16);
+    mapRef.current.flyTo([flyToSpot.latitude, flyToSpot.longitude], targetZoom, {
+      duration: 0.9,
+    });
+  }, [flyToSpot]);
 
   return (
     <div className="relative h-full w-full">

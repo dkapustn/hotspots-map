@@ -12,6 +12,7 @@ import { LikeButton } from "@/components/spot/LikeButton";
 import { CommentsList } from "@/components/spot/CommentsList";
 import { ShareButton } from "@/components/spot/ShareButton";
 import { DistanceBadge } from "@/components/spot/DistanceBadge";
+import { PhotoLightbox } from "@/components/spot/PhotoLightbox";
 import { formatRelativeTime, initials } from "@/lib/utils";
 import type { SpotWithAuthor } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
@@ -65,12 +66,14 @@ export function SpotDetail({
 
   return (
     <div className="h-full overflow-y-auto pb-safe-nav">
-      {/* Hero photo */}
+      {/* Hero photo — tap to expand */}
       <div className="relative">
-        <div className="aspect-[4/3] w-full md:aspect-[21/9]">
-          <img src={spot.photo_url} alt={spot.title} className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
-        </div>
+        <PhotoLightbox src={spot.photo_url} alt={spot.title}>
+          <div className="relative aspect-[4/3] w-full md:aspect-[21/9]">
+            <img src={spot.photo_url} alt={spot.title} className="h-full w-full object-cover" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/40" />
+          </div>
+        </PhotoLightbox>
 
         <Link
           href="/"

@@ -61,6 +61,8 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
 
   const handleClick = useCallback((spot: SpotWithAuthor) => setSelected(spot), []);
   const handleClose = useCallback(() => setSelected(null), []);
+  // Передаём в MapView последнюю выбранную метку — он плавно к ней пролетит.
+  const flyTarget = selected;
 
   const filtered = query.trim()
     ? spots.filter((s) =>
@@ -138,7 +140,7 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
         </div>
       </div>
 
-      <MapClient spots={filtered} onSpotClick={handleClick} />
+      <MapClient spots={filtered} onSpotClick={handleClick} flyToSpot={flyTarget} />
 
       {/* Empty hint */}
       {spots.length === 0 && (
