@@ -3,10 +3,11 @@ import Link from "next/link";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Heart, Footprints, MessageCircle, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { SpotWithAuthor } from "@/lib/types";
 import { initials, formatRelativeTime } from "@/lib/utils";
+import { DistanceBadge } from "@/components/spot/DistanceBadge";
+import { ShareButton } from "@/components/spot/ShareButton";
 
 export function SpotBottomSheet({
   spot,
@@ -34,7 +35,10 @@ export function SpotBottomSheet({
           <div className="mt-4 flex items-start justify-between gap-3">
             <div className="min-w-0 flex-1">
               <h2 className="truncate text-xl font-semibold">{spot.title}</h2>
-              <p className="text-xs text-muted-foreground">{formatRelativeTime(spot.created_at)}</p>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
+                <p className="text-xs text-muted-foreground">{formatRelativeTime(spot.created_at)}</p>
+                <DistanceBadge lat={spot.latitude} lng={spot.longitude} />
+              </div>
             </div>
             <Link href={`/profile/${spot.author?.id ?? ""}`} className="flex items-center gap-2 shrink-0">
               <Avatar className="h-8 w-8">
@@ -53,11 +57,14 @@ export function SpotBottomSheet({
             </p>
           )}
 
-          <Button asChild size="lg" className="mt-5 w-full">
-            <Link href={`/spot/${spot.id}`}>
-              Открыть метку <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+          <div className="mt-5 flex gap-2">
+            <Button asChild size="lg" className="flex-1">
+              <Link href={`/spot/${spot.id}`}>
+                Открыть метку <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <ShareButton spotId={spot.id} title={spot.title} />
+          </div>
         </div>
       </SheetContent>
     </Sheet>

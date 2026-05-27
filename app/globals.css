@@ -68,6 +68,12 @@
   height: 100%;
   width: 100%;
   outline: none;
+  /* Изолированный stacking context, чтобы внутренние z-index панелей
+     Leaflet (panes до 700, controls до 800) не вылезали поверх BottomNav,
+     Sidebar, диалогов или toast'ов в корневом контексте. */
+  isolation: isolate;
+  position: relative;
+  z-index: 0;
 }
 .leaflet-control-attribution {
   background: hsla(var(--background) / 0.85) !important;

@@ -13,7 +13,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
       <DesktopSidebar />
-      <main className="relative flex-1 overflow-hidden">{children}</main>
+      <main className="relative flex-1 overflow-hidden isolate">{children}</main>
       <BottomNav />
     </div>
   );

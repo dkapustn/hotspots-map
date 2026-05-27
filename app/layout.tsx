@@ -37,7 +37,16 @@ export const metadata: Metadata = {
     title: APP_NAME,
     description: APP_DESCRIPTION,
     type: "website",
+    siteName: APP_NAME,
+    locale: "ru_RU",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: APP_NAME,
+    description: APP_DESCRIPTION,
+  },
+  keywords: ["карта", "места", "лавочки", "виды", "путешествия", "город", "хобби"],
+  authors: [{ name: APP_NAME }],
 };
 
 export const viewport: Viewport = {

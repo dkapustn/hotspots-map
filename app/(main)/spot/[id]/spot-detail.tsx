@@ -10,6 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { VisitButton } from "@/components/spot/VisitButton";
 import { LikeButton } from "@/components/spot/LikeButton";
 import { CommentsList } from "@/components/spot/CommentsList";
+import { ShareButton } from "@/components/spot/ShareButton";
+import { DistanceBadge } from "@/components/spot/DistanceBadge";
 import { formatRelativeTime, initials } from "@/lib/utils";
 import type { SpotWithAuthor } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
@@ -137,7 +139,10 @@ export function SpotDetail({
               setLikesCount((c) => c + (v ? 1 : -1));
             }}
           />
+          <ShareButton spotId={spot.id} title={spot.title} />
         </div>
+
+        <DistanceBadge lat={spot.latitude} lng={spot.longitude} />
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3">

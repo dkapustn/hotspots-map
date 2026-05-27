@@ -16,7 +16,7 @@ const ITEMS = [
 export function DesktopSidebar() {
   const pathname = usePathname();
   return (
-    <aside className="hidden md:flex w-64 shrink-0 flex-col border-r bg-card/40 backdrop-blur-xl">
+    <aside className="hidden md:flex w-64 shrink-0 flex-col border-r bg-card/40 backdrop-blur-xl z-[1000]">
       <div className="flex items-center gap-3 border-b px-6 py-5">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-orange-500 shadow-lg shadow-primary/20">
           <MapPin className="h-6 w-6 text-white" strokeWidth={2.5} />
