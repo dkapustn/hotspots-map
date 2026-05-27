@@ -56,7 +56,7 @@ export default async function MyProfilePage() {
   }
 
   return (
-    <div className="h-full overflow-y-auto pb-safe-nav">
+    <div className="h-full scroll-area pb-safe-nav">
       <div className="mx-auto max-w-3xl px-4 md:px-8 pt-safe-content">
         {/* Header card */}
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/15 via-background to-orange-500/10 border p-6">

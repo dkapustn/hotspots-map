@@ -38,7 +38,7 @@ export default async function PublicProfilePage({ params }: { params: { userId: 
   const list = rawSpots.map((s) => attachAuthor(s));
 
   return (
-    <div className="h-full overflow-y-auto pb-safe-nav">
+    <div className="h-full scroll-area pb-safe-nav">
       <div className="mx-auto max-w-3xl px-4 md:px-8 pt-safe-content">
         <Link
           href="/"

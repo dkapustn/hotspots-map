@@ -12,6 +12,8 @@ import {
   Monitor,
   Bell,
   Save,
+  Palette,
+  Map as MapIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -35,6 +37,8 @@ import {
 import { compressImage } from "@/lib/photo";
 import { initials } from "@/lib/utils";
 import type { Profile } from "@/lib/types";
+import { AccentPicker } from "@/components/settings/AccentPicker";
+import { MapStylePicker } from "@/components/settings/MapStylePicker";
 
 export function SettingsForm({ initialProfile, email }: { initialProfile: Profile; email: string }) {
   const router = useRouter();
@@ -197,6 +201,8 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
             </p>
           </div>
 
+          <AccentPicker />
+
           <div className="space-y-3">
             <Label className="text-sm">Тема оформления</Label>
             <div className="grid grid-cols-3 gap-2">
@@ -219,6 +225,19 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
         </CardContent>
       </Card>
 
+      {/* Карта */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MapIcon className="h-5 w-5 text-primary" /> Карта
+          </CardTitle>
+          <CardDescription>Выберите оформление, которое лучше читается.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <MapStylePicker />
+        </CardContent>
+      </Card>
+
       <Button size="lg" className="w-full" onClick={handleSave} disabled={saving}>
         {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
         Сохранить изменения
@@ -238,6 +257,28 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
           </Button>
         </CardContent>
       </Card>
+
+      {/* Map license attribution (вынесено сюда с самой карты для чистоты) */}
+      <p className="text-center text-[11px] text-muted-foreground">
+        Карты:{" "}
+        <a
+          href="https://www.openstreetmap.org/copyright"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline-offset-2 hover:underline"
+        >
+          OpenStreetMap
+        </a>{" "}
+        ·{" "}
+        <a
+          href="https://carto.com/attributions"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline-offset-2 hover:underline"
+        >
+          CARTO
+        </a>
+      </p>
     </div>
   );
 }

@@ -17,7 +17,7 @@ export default async function SettingsPage() {
   if (!profile) redirect("/");
 
   return (
-    <div className="h-full overflow-y-auto pb-safe-nav">
+    <div className="h-full scroll-area pb-safe-nav">
       <div className="mx-auto max-w-2xl px-4 md:px-8 pt-safe-content">
         <h1 className="text-2xl font-bold md:text-3xl">Настройки</h1>
         <p className="mt-1 text-sm text-muted-foreground">Управляйте профилем и поведением приложения.</p>

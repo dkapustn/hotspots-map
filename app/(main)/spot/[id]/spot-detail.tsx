@@ -65,7 +65,7 @@ export function SpotDetail({
   const isOwner = currentUserId === spot.user_id;
 
   return (
-    <div className="h-full overflow-y-auto pb-safe-nav">
+    <div className="h-full scroll-area pb-safe-nav">
       {/* Hero photo — tap to expand */}
       <div className="relative">
         <PhotoLightbox src={spot.photo_url} alt={spot.title}>

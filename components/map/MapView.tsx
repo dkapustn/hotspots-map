@@ -1,24 +1,23 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import L from "leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { LocateFixed, Loader2 } from "lucide-react";
-import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "@/lib/constants";
 import { getCurrentPosition, type Coords } from "@/lib/geo";
 import { vibrate } from "@/lib/photo";
+import {
+  MAP_STYLE_CHANGE_EVENT,
+  getMapStyle,
+  getStoredMapStyle,
+  type MapStyleId,
+} from "@/lib/map-styles";
 import type { SpotWithAuthor } from "@/lib/types";
 import { SpotMarker } from "./SpotMarker";
 import { UserLocationMarker } from "./UserLocationMarker";
 import { toast } from "sonner";
-
-const LIGHT_TILES = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
-const DARK_TILES = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
-const ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
 
 interface MapViewProps {
   spots: SpotWithAuthor[];
@@ -29,11 +28,23 @@ interface MapViewProps {
 const VIEW_STORAGE_KEY = "hotspots:map-view:v1";
 
 export function MapView({ spots, onSpotClick, flyToSpot }: MapViewProps) {
-  const { resolvedTheme } = useTheme();
   const [userPos, setUserPos] = useState<Coords | null>(null);
   const [locating, setLocating] = useState(false);
   const mapRef = useRef<L.Map | null>(null);
   const hasAutoLocated = useRef(false);
+
+  // Стиль карты — реактивно подхватываем смену из настроек.
+  const [styleId, setStyleId] = useState<MapStyleId>("voyager");
+  useEffect(() => {
+    setStyleId(getStoredMapStyle());
+    const onChange = (e: Event) => {
+      const detail = (e as CustomEvent<MapStyleId>).detail;
+      if (detail) setStyleId(detail);
+    };
+    window.addEventListener(MAP_STYLE_CHANGE_EVENT, onChange);
+    return () => window.removeEventListener(MAP_STYLE_CHANGE_EVENT, onChange);
+  }, []);
+  const tileUrl = getMapStyle(styleId).url;
 
   const handleLocate = useCallback(async () => {
     setLocating(true);
@@ -118,16 +129,13 @@ export function MapView({ spots, onSpotClick, flyToSpot }: MapViewProps) {
         center={DEFAULT_MAP_CENTER}
         zoom={DEFAULT_MAP_ZOOM}
         zoomControl={false}
+        attributionControl={false}
         ref={mapRef}
         className="h-full w-full"
         worldCopyJump
         preferCanvas
       >
-        <TileLayer
-          attribution={ATTRIBUTION}
-          url={resolvedTheme === "dark" ? DARK_TILES : LIGHT_TILES}
-          maxZoom={19}
-        />
+        <TileLayer key={styleId} url={tileUrl} maxZoom={19} />
 
         <MarkerClusterGroup
           chunkedLoading

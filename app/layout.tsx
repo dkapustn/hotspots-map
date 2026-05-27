@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import { AccentInitializer } from "@/components/settings/AccentInitializer";
 import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ru" suppressHydrationWarning className={inter.variable}>
       <body className="font-sans">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <AccentInitializer />
           {children}
           <Toaster position="top-center" richColors closeButton theme="system" />
         </ThemeProvider>

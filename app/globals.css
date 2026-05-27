@@ -95,6 +95,29 @@
   @media (min-width: 768px) {
     .pb-safe-nav { padding-bottom: 2rem; }
   }
+
+  /* iOS-friendly scroll container.
+     - overflow-y: scroll (а не auto) → стабильнее height/scrollbar
+     - -webkit-overflow-scrolling: touch → плавный momentum scroll
+     - overscroll-behavior-y: contain → убирает «резинку», которая
+       выбрасывала пользователя вверх при достижении конца
+     - scroll-padding-bottom → когда iOS прокручивает focused input в
+       зону видимости, оставляет запас под BottomNav */
+  .scroll-area {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    scroll-padding-bottom: 6rem;
+  }
+
+  /* iOS зумит viewport если font-size инпута < 16px при фокусе. Фиксим
+     глобально, чтобы избежать визуальных «прыжков» страницы. */
+  input, textarea, select {
+    font-size: 16px;
+  }
+  @media (min-width: 768px) {
+    input, textarea, select { font-size: 14px; }
+  }
 }
 
 @layer components {
@@ -180,7 +203,8 @@
 }
 .leaflet-control-attribution a { color: hsl(var(--primary)) !important; }
 .leaflet-control-zoom { display: none; }
-.dark .leaflet-tile { filter: brightness(0.7) contrast(1.05) saturate(0.85); }
+/* Раньше был filter: brightness(0.7) — делал тёмные тайлы нечитаемыми.
+   Теперь стиль карты выбирается пользователем явно в настройках. */
 
 .spot-marker {
   background: transparent !important;

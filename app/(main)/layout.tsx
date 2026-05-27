@@ -26,7 +26,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
     <>
       <div className="fixed inset-0 flex w-full overflow-hidden">
         <DesktopSidebar />
-        <main className="relative flex-1 overflow-hidden isolate">{children}</main>
+        <main className="relative flex-1 min-w-0 min-h-0 overflow-hidden isolate">{children}</main>
         <BottomNav />
       </div>
 
