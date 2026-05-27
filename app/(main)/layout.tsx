@@ -22,12 +22,23 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   // initial containing block) во всех режимах — браузер, standalone PWA,
   // landscape, любые iOS-edge cases.
   return (
-    <div className="fixed inset-0 flex w-full overflow-hidden bg-background">
-      <DesktopSidebar />
-      <div className="relative flex flex-1 flex-col min-w-0 overflow-hidden">
-        <main className="relative flex-1 overflow-hidden isolate">{children}</main>
-        <BottomNav />
+    <>
+      {/* Safety-net: «затычка» под BottomNav. Если iOS Safari в PWA
+          standalone оставляет невидимый зазор внизу (известный баг с
+          dvh/vh), эта плашка цветом приложения замаскирует его —
+          визуально пользователь видит фон, а не белую полосу. */}
+      <div
+        aria-hidden="true"
+        className="fixed inset-x-0 bottom-0 z-0 h-20 bg-background pointer-events-none md:hidden"
+      />
+
+      <div className="fixed inset-0 flex w-full overflow-hidden bg-background">
+        <DesktopSidebar />
+        <div className="relative flex flex-1 flex-col min-w-0 overflow-hidden">
+          <main className="relative flex-1 overflow-hidden isolate">{children}</main>
+          <BottomNav />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
