@@ -37,12 +37,16 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Главная навигация"
-      // Liquid Glass — плавающий floating bar, отступы от краёв
-      className="pointer-events-none fixed inset-x-3 z-[1000] mb-[max(env(safe-area-inset-bottom,0px),0.75rem)] bottom-0 md:hidden"
+      // Liquid Glass — full-width bar в самом низу. Закруглён только
+      // сверху (выглядит как drawer, поднятый со дна). Нет пустоты
+      // снизу/сбоку. Карта сразу под верхним краем бара.
+      // pb внутри плашки = safe-area для home-indicator iOS, но
+      // КАПИРОВАНО до 0.75rem — иначе на PWA полоса 34px слишком толста.
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-[1000] md:hidden"
     >
-      <div className="pointer-events-auto mx-auto max-w-md">
-        <div className="glass-strong glass-shine rounded-[28px] p-1.5">
-          <div className="relative flex items-stretch">
+      <div className="pointer-events-auto">
+        <div className="glass-strong glass-shine rounded-t-[28px] px-2 pt-2 pb-[max(min(env(safe-area-inset-bottom,0px),0.75rem),0.375rem)]">
+          <div className="relative mx-auto flex max-w-md items-stretch">
             {TABS.map((tab, idx) => {
               const Icon = tab.icon;
               const active = idx === activeIdx;
