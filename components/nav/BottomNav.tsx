@@ -32,10 +32,14 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Главная навигация"
-      // pb: уважаем safe-area, но КАПИРУЕМ на 0.75rem — иначе на PWA
-      // у iPhone (env≈34px) внизу видна толстая пустая полоса. Минимум
-      // 0.25rem чтобы тапы не сидели впритык к нижней грани.
-      className="fixed inset-x-0 bottom-0 z-[1000] border-t bg-background/95 backdrop-blur-xl md:hidden pb-[max(min(env(safe-area-inset-bottom,0px),0.75rem),0.25rem)]"
+      // НЕ fixed — bar теперь flex-child в (main) layout, стоит у
+      // нижней границы видимой области автоматически.
+      // pb = полный env(safe-area-inset-bottom) → bar background
+      // покрывает зону home-indicator. iOS рисует индикатор поверх.
+      className={cn(
+        "relative shrink-0 z-[1000] border-t bg-background/95 backdrop-blur-xl md:hidden",
+        "pb-[env(safe-area-inset-bottom,0px)]",
+      )}
     >
       <div className="relative mx-auto flex h-16 max-w-lg items-stretch">
         {TABS_LEFT.map((t) => (

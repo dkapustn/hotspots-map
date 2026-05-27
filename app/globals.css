@@ -61,6 +61,13 @@
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
   }
+  /* CRITICAL для iOS PWA с viewport-fit=cover: html должен иметь фон
+     приложения. Иначе зоны safe-area (под home-indicator, у Dynamic
+     Island) показывают белый фон html, а не наш тёмный фон → видна
+     «пустая полоса» под BottomNav. */
+  html {
+    @apply bg-background;
+  }
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -81,10 +88,10 @@
     .pt-safe-content { padding-top: 2rem; }
   }
   /* Отступ снизу для контента над BottomNav.
-     BottomNav: h-16 (4rem) + капнутый safe-area до 0.75rem = ~4.75rem.
-     Добавляем 0.75rem зазора → суммарно 5.5rem. */
+     BottomNav теперь flex-child (не fixed) → main уже сжат на высоту бара.
+     pb нужен только для визуального дыхания, не для clear'а бара. */
   .pb-safe-nav {
-    padding-bottom: 5.5rem;
+    padding-bottom: 1.5rem;
   }
   @media (min-width: 768px) {
     .pb-safe-nav { padding-bottom: 2rem; }
