@@ -12,11 +12,17 @@ export default async function MainLayout({ children }: { children: React.ReactNo
 
   // Структура: горизонтальный flex (Sidebar | main-column).
   // main-column — вертикальный flex с (main + BottomNav).
-  // BottomNav теперь НЕ fixed, а последний ребёнок flex-колонки —
-  // гарантировано стоит у нижней границы видимой области viewport
-  // (в т.ч. в iOS PWA standalone).
+  // BottomNav — последний ребёнок flex-колонки → у нижней границы.
+  //
+  // ВАЖНО: используем `fixed inset-0` вместо `h-[100dvh]`.
+  // В iOS Safari standalone PWA dvh/vh могут возвращать «безопасную»
+  // высоту (без зоны home-indicator), из-за чего layout оказывается
+  // ~34px короче реального экрана и BottomNav «парит» над низом.
+  // `fixed inset-0` гарантированно занимает весь viewport (через
+  // initial containing block) во всех режимах — браузер, standalone PWA,
+  // landscape, любые iOS-edge cases.
   return (
-    <div className="flex h-[100dvh] w-full overflow-hidden bg-background">
+    <div className="fixed inset-0 flex w-full overflow-hidden bg-background">
       <DesktopSidebar />
       <div className="relative flex flex-1 flex-col min-w-0 overflow-hidden">
         <main className="relative flex-1 overflow-hidden isolate">{children}</main>
