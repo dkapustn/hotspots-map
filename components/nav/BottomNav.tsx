@@ -37,15 +37,22 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Главная навигация"
-      // Liquid Glass — full-width bar в самом низу. Закруглён только
-      // сверху (выглядит как drawer, поднятый со дна). Нет пустоты
-      // снизу/сбоку. Карта сразу под верхним краем бара.
-      // pb внутри плашки = safe-area для home-indicator iOS, но
-      // КАПИРОВАНО до 0.75rem — иначе на PWA полоса 34px слишком толста.
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-[1000] md:hidden"
+      // Та же iOS PWA история: `bottom: 0` парится у safe-area, а не
+      // у реального дна. Толкаем nav вниз через отрицательный bottom,
+      // чтобы glass-фон бара дошёл до самой нижней грани viewport.
+      // pb внутри = env(safe-area-inset-bottom) + 6px → tap-targets
+      // остаются НАД зоной home-indicator (iOS HIG), бар при этом
+      // визуально полный, без пустот под ним.
+      className="pointer-events-none fixed inset-x-0 z-[1000] md:hidden"
+      style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) * -1)" }}
     >
       <div className="pointer-events-auto">
-        <div className="glass-strong glass-shine rounded-t-[28px] px-2 pt-2 pb-[max(min(env(safe-area-inset-bottom,0px),0.75rem),0.375rem)]">
+        <div
+          className="glass-strong glass-shine rounded-t-[28px] px-2 pt-2"
+          style={{
+            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.375rem)",
+          }}
+        >
           <div className="relative mx-auto flex max-w-md items-stretch">
             {TABS.map((tab, idx) => {
               const Icon = tab.icon;

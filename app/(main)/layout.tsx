@@ -24,7 +24,19 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   // landscape, любые iOS-edge cases.
   return (
     <>
-      <div className="fixed inset-0 flex w-full overflow-hidden">
+      {/*
+        iOS PWA standalone quirk: `fixed inset-0` (= bottom: 0) на самом
+        деле приземляется на верхнюю границу safe-area, а не на дно
+        экрана. Из-за этого карта обрывалась за ~34px до низа и в зоне
+        home-indicator проглядывал html bg.
+        Фикс: явно тянем bottom за safe-area (отрицательное значение),
+        чтобы main/map покрывали ВЕСЬ видимый viewport включая зону
+        home-indicator.
+      */}
+      <div
+        className="fixed inset-x-0 top-0 flex w-full overflow-hidden"
+        style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) * -1)" }}
+      >
         <DesktopSidebar />
         <main className="relative flex-1 min-w-0 min-h-0 overflow-hidden isolate">{children}</main>
         <BottomNav />
