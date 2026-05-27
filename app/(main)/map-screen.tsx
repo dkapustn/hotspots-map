@@ -75,15 +75,15 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
     <div className="relative h-full w-full">
       <Onboarding />
 
-      {/* Top bar (mobile) */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 px-4 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] pb-2 md:hidden">
-        <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-card/90 px-3 py-1.5 shadow-md backdrop-blur">
+      {/* Top bar (mobile) — Liquid Glass pills */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 px-3 pt-[calc(env(safe-area-inset-top,0px)+0.625rem)] pb-2 md:hidden">
+        <div className="pointer-events-auto glass-strong glass-shine flex items-center gap-2 rounded-full px-3.5 py-1.5">
           <MapPin className="h-4 w-4 text-primary" />
           <span className="text-sm font-semibold">{APP_NAME}</span>
         </div>
         <div className="pointer-events-auto">
           {searchOpen ? (
-            <div className="flex items-center gap-1 rounded-full bg-card/95 pl-3 pr-1 py-1 shadow-md backdrop-blur w-[60vw] max-w-[260px]">
+            <div className="glass-strong glass-shine flex items-center gap-1 rounded-full pl-3.5 pr-1 py-1 w-[62vw] max-w-[280px]">
               <Search className="h-4 w-4 text-muted-foreground shrink-0" />
               <input
                 autoFocus
@@ -97,7 +97,7 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
                   setSearchOpen(false);
                   setQuery("");
                 }}
-                className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-muted shrink-0"
+                className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-foreground/10 shrink-0"
                 aria-label="Закрыть"
               >
                 <X className="h-4 w-4" />
@@ -106,7 +106,7 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
           ) : (
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-card/90 shadow-md backdrop-blur"
+              className="glass-strong glass-shine flex h-10 w-10 items-center justify-center rounded-full"
               aria-label="Поиск"
             >
               <Search className="h-4 w-4" />
@@ -115,9 +115,9 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
         </div>
       </div>
 
-      {/* Desktop search */}
+      {/* Desktop search — glass pill */}
       <div className="pointer-events-none absolute left-0 right-0 top-4 z-30 hidden md:flex justify-center px-4">
-        <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-card/95 px-4 py-2 shadow-xl backdrop-blur w-full max-w-md border">
+        <div className="pointer-events-auto glass-strong glass-shine flex items-center gap-2 rounded-full px-5 py-2.5 w-full max-w-md">
           <Search className="h-4 w-4 text-muted-foreground" />
           <input
             value={query}
@@ -128,7 +128,7 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
           {query && (
             <button
               onClick={() => setQuery("")}
-              className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-muted text-muted-foreground"
+              className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-foreground/10 text-muted-foreground"
               aria-label="Очистить"
             >
               <X className="h-3.5 w-3.5" />
@@ -145,12 +145,12 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
       {/* Empty hint */}
       {spots.length === 0 && (
         <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 flex -translate-y-1/2 justify-center px-4">
-          <div className="pointer-events-auto max-w-sm rounded-2xl border bg-card/95 p-5 text-center shadow-2xl backdrop-blur">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
-              <MapPin className="h-6 w-6 text-primary" />
+          <div className="pointer-events-auto glass-strong glass-shine max-w-sm rounded-3xl p-6 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-orange-500 text-white shadow-lg shadow-primary/30">
+              <MapPin className="h-7 w-7" />
             </div>
-            <h3 className="mt-3 text-base font-semibold">Здесь пока пусто</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <h3 className="mt-4 text-lg font-semibold">Здесь пока пусто</h3>
+            <p className="mt-1.5 text-sm text-muted-foreground">
               Станьте первым и поделитесь крутым местом!
             </p>
             <Button asChild className="mt-4 w-full">
@@ -165,7 +165,7 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
       {/* No search results */}
       {spots.length > 0 && filtered.length === 0 && query.trim() && (
         <div className="pointer-events-none absolute inset-x-0 top-24 z-20 flex justify-center px-4">
-          <div className="pointer-events-auto rounded-xl border bg-card/95 px-4 py-2 text-sm shadow-md backdrop-blur">
+          <div className="pointer-events-auto glass-strong glass-shine rounded-full px-4 py-2 text-sm">
             Ничего не нашлось по «{query}»
           </div>
         </div>
