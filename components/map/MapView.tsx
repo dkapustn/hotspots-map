@@ -84,18 +84,15 @@ export function MapView({ spots, onSpotClick }: MapViewProps) {
         {userPos && <UserLocationMarker lat={userPos.lat} lng={userPos.lng} />}
       </MapContainer>
 
-      {/* Floating locate button — поднята выше BottomNav (на iPhone с
-          home-indicator BottomNav может быть до 100px), чтобы не наезжать. */}
+      {/* Floating locate button. main теперь flex-1 — заканчивается у
+          верхней границы BottomNav, поэтому достаточно простого bottom-4. */}
       <Button
         type="button"
         size="icon"
         variant="secondary"
         onClick={handleLocate}
         disabled={locating}
-        className={cn(
-          "absolute right-4 z-[600] h-11 w-11 rounded-full bg-card border shadow-lg",
-          "bottom-[calc(env(safe-area-inset-bottom,0px)+5.5rem)] md:bottom-6",
-        )}
+        className="absolute right-4 bottom-4 z-[600] h-11 w-11 rounded-full bg-card border shadow-lg"
         aria-label="Моя локация"
       >
         {locating ? <Loader2 className="h-5 w-5 animate-spin" /> : <LocateFixed className="h-5 w-5" />}

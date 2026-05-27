@@ -4,8 +4,6 @@ import { usePathname } from "next/navigation";
 import { Map, Plus, Trophy, User, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Раскладка: 2 таба | spacer (под floating +) | 2 таба
-// Spacer ровно по центру → floating «+» центрирован геометрически.
 const TABS_LEFT = [
   { href: "/", label: "Карта", icon: Map, match: (p: string) => p === "/" },
   { href: "/top", label: "Топ", icon: Trophy, match: (p: string) => p.startsWith("/top") },
@@ -16,7 +14,8 @@ const TABS_RIGHT = [
     href: "/profile",
     label: "Профиль",
     icon: User,
-    match: (p: string) => p === "/profile" || (p.startsWith("/profile/") && !p.startsWith("/profile/settings")),
+    match: (p: string) =>
+      p === "/profile" || (p.startsWith("/profile/") && !p.startsWith("/profile/settings")),
   },
   {
     href: "/profile/settings",
@@ -32,28 +31,23 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Главная навигация"
-      // НЕ fixed — bar теперь flex-child в (main) layout, стоит у
-      // нижней границы видимой области автоматически.
-      // pb = полный env(safe-area-inset-bottom) → bar background
-      // покрывает зону home-indicator. iOS рисует индикатор поверх.
-      className={cn(
-        "relative shrink-0 z-[1000] border-t bg-background/95 backdrop-blur-xl md:hidden",
-        "pb-[env(safe-area-inset-bottom,0px)]",
-      )}
+      // НЕТ pb-safe. Бар имеет высоту ровно h-16 и стоит у самой нижней
+      // границы экрана (через flex-col в layout + fixed inset-0).
+      // iOS home-indicator pill будет рендериться поверх — это норма
+      // для большинства iOS-приложений (Twitter X, Telegram и т.д.).
+      className="relative shrink-0 z-[1000] border-t bg-background/95 backdrop-blur-xl md:hidden"
     >
       <div className="relative mx-auto flex h-16 max-w-lg items-stretch">
         {TABS_LEFT.map((t) => (
           <TabLink key={t.href} href={t.href} label={t.label} icon={t.icon} active={t.match(pathname)} />
         ))}
 
-        {/* Spacer строго по центру нав-бара под floating «+». */}
         <div className="w-16 shrink-0" aria-hidden="true" />
 
         {TABS_RIGHT.map((t) => (
           <TabLink key={t.href} href={t.href} label={t.label} icon={t.icon} active={t.match(pathname)} />
         ))}
 
-        {/* Floating «+» — абсолютно позиционированный, в центре nav-бара. */}
         <Link
           href="/create"
           aria-label="Создать метку"
