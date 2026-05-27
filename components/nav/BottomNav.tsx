@@ -1,13 +1,29 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Map, Plus, Trophy, User } from "lucide-react";
+import { Map, Plus, Trophy, User, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const TABS = [
+// Раскладка: 2 таба | spacer (под floating +) | 2 таба
+// Spacer ровно по центру → floating «+» центрирован геометрически.
+const TABS_LEFT = [
   { href: "/", label: "Карта", icon: Map, match: (p: string) => p === "/" },
   { href: "/top", label: "Топ", icon: Trophy, match: (p: string) => p.startsWith("/top") },
-  { href: "/profile", label: "Профиль", icon: User, match: (p: string) => p.startsWith("/profile") },
+] as const;
+
+const TABS_RIGHT = [
+  {
+    href: "/profile",
+    label: "Профиль",
+    icon: User,
+    match: (p: string) => p === "/profile" || (p.startsWith("/profile/") && !p.startsWith("/profile/settings")),
+  },
+  {
+    href: "/profile/settings",
+    label: "Настройки",
+    icon: Settings,
+    match: (p: string) => p.startsWith("/profile/settings"),
+  },
 ] as const;
 
 export function BottomNav() {
@@ -18,19 +34,19 @@ export function BottomNav() {
       aria-label="Главная навигация"
       className="fixed inset-x-0 bottom-0 z-[1000] border-t bg-background/95 backdrop-blur-xl md:hidden pb-safe"
     >
-      <div className="relative mx-auto flex h-16 max-w-md items-stretch">
-        {/* Левая половина */}
-        <TabLink {...TABS[0]} active={TABS[0].match(pathname)} />
-        <TabLink {...TABS[1]} active={TABS[1].match(pathname)} />
+      <div className="relative mx-auto flex h-16 max-w-lg items-stretch">
+        {TABS_LEFT.map((t) => (
+          <TabLink key={t.href} href={t.href} label={t.label} icon={t.icon} active={t.match(pathname)} />
+        ))}
 
-        {/* Spacer для floating-кнопки */}
+        {/* Spacer строго по центру нав-бара под floating «+». */}
         <div className="w-16 shrink-0" aria-hidden="true" />
 
-        {/* Правая половина */}
-        <TabLink {...TABS[2]} active={TABS[2].match(pathname)} />
+        {TABS_RIGHT.map((t) => (
+          <TabLink key={t.href} href={t.href} label={t.label} icon={t.icon} active={t.match(pathname)} />
+        ))}
 
-        {/* Floating «+» — абсолютная позиция, чтобы не ломать flex и
-            не быть обрезанной overflow родителя. */}
+        {/* Floating «+» — абсолютно позиционированный, в центре nav-бара. */}
         <Link
           href="/create"
           aria-label="Создать метку"
@@ -38,7 +54,7 @@ export function BottomNav() {
             "absolute left-1/2 -translate-x-1/2 -top-6",
             "flex h-14 w-14 items-center justify-center rounded-full",
             "bg-gradient-to-br from-primary to-orange-500 text-white",
-            "shadow-xl shadow-primary/30 ring-4 ring-background",
+            "shadow-lg shadow-primary/40 ring-4 ring-background",
             "transition-transform active:scale-95",
           )}
         >
@@ -64,7 +80,7 @@ function TabLink({
     <Link
       href={href}
       className={cn(
-        "flex flex-1 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors",
+        "flex flex-1 flex-col items-center justify-center gap-0.5 text-[10px] font-medium transition-colors",
         active ? "text-primary" : "text-muted-foreground hover:text-foreground",
       )}
     >

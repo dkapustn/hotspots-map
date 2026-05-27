@@ -6,6 +6,7 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import { LocateFixed, Loader2 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "@/lib/constants";
 import { getCurrentPosition, type Coords } from "@/lib/geo";
 import { vibrate } from "@/lib/photo";
@@ -83,14 +84,18 @@ export function MapView({ spots, onSpotClick }: MapViewProps) {
         {userPos && <UserLocationMarker lat={userPos.lat} lng={userPos.lng} />}
       </MapContainer>
 
-      {/* Floating locate button */}
+      {/* Floating locate button — поднята выше BottomNav (на iPhone с
+          home-indicator BottomNav может быть до 100px), чтобы не наезжать. */}
       <Button
         type="button"
         size="icon"
         variant="secondary"
         onClick={handleLocate}
         disabled={locating}
-        className="absolute right-4 bottom-32 md:bottom-6 z-[400] h-12 w-12 rounded-full shadow-xl bg-card border"
+        className={cn(
+          "absolute right-4 z-[600] h-11 w-11 rounded-full bg-card border shadow-lg",
+          "bottom-[calc(env(safe-area-inset-bottom,0px)+5.5rem)] md:bottom-6",
+        )}
         aria-label="Моя локация"
       >
         {locating ? <Loader2 className="h-5 w-5 animate-spin" /> : <LocateFixed className="h-5 w-5" />}
