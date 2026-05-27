@@ -74,7 +74,7 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
       <Onboarding />
 
       {/* Top bar (mobile) */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 px-4 pt-safe pb-2 md:hidden">
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 px-4 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] pb-2 md:hidden">
         <div className="pointer-events-auto flex items-center gap-2 rounded-full bg-card/90 px-3 py-1.5 shadow-md backdrop-blur">
           <MapPin className="h-4 w-4 text-primary" />
           <span className="text-sm font-semibold">{APP_NAME}</span>

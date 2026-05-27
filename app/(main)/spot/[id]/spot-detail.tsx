@@ -64,7 +64,7 @@ export function SpotDetail({
   const isOwner = currentUserId === spot.user_id;
 
   return (
-    <div className="h-full overflow-y-auto pb-32 md:pb-8">
+    <div className="h-full overflow-y-auto pb-safe-nav">
       {/* Hero photo */}
       <div className="relative">
         <div className="aspect-[4/3] w-full md:aspect-[21/9]">

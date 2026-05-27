@@ -64,15 +64,29 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
-    /* На iOS standalone-режиме блокируем системную «резинку». */
-    position: fixed;
-    inset: 0;
+    /* overflow: hidden на body запрещает body-уровневую прокрутку
+       (резинку iOS), но НЕ блокирует прокрутку внутренних контейнеров
+       с overflow-y-auto (forms, профиль, и т.п.). Без position:fixed —
+       иначе iOS не может корректно скроллить input в view при появлении
+       клавиатуры, и страница «прыгает» обратно. */
     overflow: hidden;
   }
   /* iOS safe areas */
-  .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0.5rem); }
-  .pt-safe { padding-top: max(env(safe-area-inset-top), 0.5rem); }
-  .mt-safe { margin-top: env(safe-area-inset-top); }
+  .pb-safe { padding-bottom: max(env(safe-area-inset-bottom, 0px), 0.5rem); }
+  .pt-safe { padding-top: max(env(safe-area-inset-top, 0px), 0.5rem); }
+  .mt-safe { margin-top: env(safe-area-inset-top, 0px); }
+  /* Отступ сверху контента: учитывает notch + дополнительное «дыхание». */
+  .pt-safe-content { padding-top: calc(env(safe-area-inset-top, 0px) + 1.25rem); }
+  @media (min-width: 768px) {
+    .pt-safe-content { padding-top: 2rem; }
+  }
+  /* Отступ снизу для контента над BottomNav: учитывает safe-area + высоту бара. */
+  .pb-safe-nav {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 6rem);
+  }
+  @media (min-width: 768px) {
+    .pb-safe-nav { padding-bottom: 2rem; }
+  }
 }
 
 /* ── Leaflet customization ── */

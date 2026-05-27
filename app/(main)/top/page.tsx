@@ -41,8 +41,8 @@ export default async function TopPage() {
   ]);
 
   return (
-    <div className="h-full overflow-y-auto pb-24 md:pb-8">
-      <div className="mx-auto max-w-3xl px-4 pt-6 md:px-8">
+    <div className="h-full overflow-y-auto pb-safe-nav">
+      <div className="mx-auto max-w-3xl px-4 md:px-8 pt-safe-content">
         <div className="flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-orange-500/30">
             <Trophy className="h-6 w-6 text-white" />

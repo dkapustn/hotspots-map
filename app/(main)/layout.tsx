@@ -11,7 +11,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   if (!user) redirect("/login");
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-background">
+    <div className="flex h-[100dvh] w-full overflow-hidden bg-background">
       <DesktopSidebar />
       <main className="relative flex-1 overflow-hidden isolate">{children}</main>
       <BottomNav />
