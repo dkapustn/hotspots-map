@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { GoogleIcon } from "@/components/icons/google";
+import { GuestButton } from "@/components/auth/GuestButton";
 
 export function SignupForm() {
   const router = useRouter();
@@ -151,6 +152,10 @@ export function SignupForm() {
           {loading ? <Spinner /> : <>Создать аккаунт <ArrowRight className="h-4 w-4" /></>}
         </Button>
       </form>
+
+      <div className="pt-2">
+        <GuestButton />
+      </div>
     </div>
   );
 }

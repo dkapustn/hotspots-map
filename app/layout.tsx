@@ -56,8 +56,12 @@ export const viewport: Viewport = {
   ],
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5,
-  userScalable: true,
+  // Запрещаем браузерный pinch-zoom всего UI — карта Leaflet делает свой
+  // pinch-zoom внутри своего контейнера. Иначе пальцами тянется весь
+  // интерфейс вместе с картой.
+  maximumScale: 1,
+  minimumScale: 1,
+  userScalable: false,
   viewportFit: "cover",
 };
 

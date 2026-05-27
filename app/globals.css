@@ -51,14 +51,28 @@
 
 @layer base {
   * { @apply border-border; }
-  html, body { height: 100%; overscroll-behavior-y: none; }
+  html, body {
+    height: 100%;
+    overscroll-behavior: none;
+    /* manipulation = разрешает скролл и pinch только там где это явно
+       нужно (например, в .leaflet-container), но запрещает double-tap zoom
+       и нежелательное растягивание UI пальцами. */
+    touch-action: manipulation;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    /* На iOS standalone-режиме блокируем системную «резинку». */
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
   }
   /* iOS safe areas */
   .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0.5rem); }
   .pt-safe { padding-top: max(env(safe-area-inset-top), 0.5rem); }
+  .mt-safe { margin-top: env(safe-area-inset-top); }
 }
 
 /* ── Leaflet customization ── */
@@ -74,6 +88,9 @@
   isolation: isolate;
   position: relative;
   z-index: 0;
+  /* Внутри карты восстанавливаем все жесты (pinch / pan) — иначе
+     touch-action: manipulation на body убьёт их. */
+  touch-action: none;
 }
 .leaflet-control-attribution {
   background: hsla(var(--background) / 0.85) !important;
