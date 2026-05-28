@@ -37,9 +37,19 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Главная навигация"
-      // Та же простая позиция (полная ширина, прижата к низу, safe-area
-      // как padding ВНУТРИ) — НО с Liquid Glass материалом сверху.
-      className="glass-strong glass-shine fixed inset-x-0 bottom-0 z-[1000] rounded-t-[28px] md:hidden"
+      // Gradient bg: top — semi-transparent glass (карта проступает),
+      // bottom — точно цвет html bg. На границе бара и зоны под ним
+      // нет визуального шва: и в баре, и ниже один и тот же цвет.
+      // backdrop-filter создаёт frosted-blur только там, где bg
+      // полупрозрачный (т.е. сверху). Снизу blur не работает (bg
+      // непрозрачный) — и это правильно: нижняя часть = solid фон.
+      className="fixed inset-x-0 bottom-0 z-[1000] rounded-t-[28px] border-t border-white/5 md:hidden"
+      style={{
+        background:
+          "linear-gradient(to bottom, rgb(var(--glass-tint) / 0.55) 0%, rgb(var(--glass-tint) / 0.85) 45%, hsl(var(--background)) 100%)",
+        backdropFilter: "blur(40px) saturate(180%)",
+        WebkitBackdropFilter: "blur(40px) saturate(180%)",
+      }}
     >
       <div className="mx-auto flex h-14 max-w-md items-stretch px-2">
         {TABS.map((tab, idx) => {
@@ -61,11 +71,10 @@ export function BottomNav() {
                     : "text-muted-foreground",
               )}
             >
-              {/* Активная «пилюля» с морфингом между табами */}
               {active && !isPrimary && (
                 <motion.span
                   layoutId="liquid-nav-pill"
-                  className="absolute inset-x-1 inset-y-1.5 -z-0 rounded-2xl bg-foreground/10 dark:bg-white/12"
+                  className="absolute inset-x-1 inset-y-1.5 -z-0 rounded-2xl bg-foreground/8 dark:bg-white/8"
                   transition={{ type: "spring", stiffness: 380, damping: 32 }}
                 />
               )}
