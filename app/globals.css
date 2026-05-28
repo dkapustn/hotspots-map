@@ -94,9 +94,10 @@
   @media (min-width: 768px) {
     .pt-safe-content { padding-top: 2rem; }
   }
-  /* Бар: pt-2 (8) + tabs (~42) + pb (env + 8) = env + 58 на iPhone PWA.
-     Контенту нужно равный pb чтобы скролл не прятал последний элемент. */
-  .pb-safe-nav { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem); }
+  /* Бар компактный: pt-2 (8) + tabs (~42) + pb-1 (4) = ~54px видимая
+     часть. С учётом transform translateY(env) ≈ env + 54.
+     Контент должен иметь pb env + 4rem чтобы скролл не прятал низ. */
+  .pb-safe-nav { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4rem); }
   @media (min-width: 768px) {
     .pb-safe-nav { padding-bottom: 2rem; }
   }

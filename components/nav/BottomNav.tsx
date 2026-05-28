@@ -36,36 +36,27 @@ export function BottomNav() {
 
   return (
     <>
-      {/* DEFENSIVE SAFETY FILLER — extra перестраховка.
-          С тем же transform-фокусом, что и бар: сдвигается на
-          env(safe-area-inset-bottom) вниз, гарантированно покрывая
-          home-indicator зону. Цвет совпадает с баром. */}
+      {/* Safety filler: solid bg-background color matching --glass-tint.
+          Покрывает зону под баром одинаковым цветом, даже если iOS
+          клиппит и бар, и transform. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-[999] glass-strong md:hidden"
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-[999] md:hidden"
         style={{
           height: "max(env(safe-area-inset-bottom, 0px), 1px)",
-          transform: "translateY(env(safe-area-inset-bottom, 0px))",
+          background: "rgb(var(--glass-tint))",
         }}
       />
 
       <nav
         aria-label="Главная навигация"
-        // iOS PWA standalone клиппит `fixed bottom: 0` к safe-area-top.
-        // transform: translateY (render-transformation) iOS клиппить
-        // НЕ может — сдвигаем визуально на env вниз, бар достигает
-        // реального низа viewport. Inner pb компенсирует, чтобы табы
-        // остались выше home-indicator.
+        // transform: translateY(env) пушит бар вниз ПОВЕРХ safe-area.
+        // Внутри pb-1 (4px) — кнопки буквально у нижнего края бара.
         className="pointer-events-none fixed inset-x-0 bottom-0 z-[1000] md:hidden"
         style={{ transform: "translateY(env(safe-area-inset-bottom, 0px))" }}
       >
         <div className="pointer-events-auto">
-          <div
-            className="glass-strong glass-shine rounded-t-[28px] px-2 pt-2 border-t border-primary/30"
-            style={{
-              paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.5rem)",
-            }}
-          >
+          <div className="glass-strong glass-shine rounded-t-[28px] px-2 pt-2 pb-1 border-t border-primary/30">
             <div className="relative mx-auto flex max-w-md items-stretch">
             {TABS.map((tab, idx) => {
               const Icon = tab.icon;
