@@ -37,22 +37,14 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Главная навигация"
-      // Та же iOS PWA история: `bottom: 0` парится у safe-area, а не
-      // у реального дна. Толкаем nav вниз через отрицательный bottom,
-      // чтобы glass-фон бара дошёл до самой нижней грани viewport.
-      // pb внутри = env(safe-area-inset-bottom) + 6px → tap-targets
-      // остаются НАД зоной home-indicator (iOS HIG), бар при этом
-      // визуально полный, без пустот под ним.
-      className="pointer-events-none fixed inset-x-0 z-[1000] md:hidden"
-      style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) * -1)" }}
+      // Бар прижат ко дну (bottom: 0). pb-внутри ОЧЕНЬ маленькое (8px)
+      // — иначе iOS PWA safe-area-inset-bottom (~34px) создаёт визуальную
+      // «полосу пустоты» под табами. Home-indicator iOS рисует поверх
+      // нижнего края бара полупрозрачно (как Telegram / X / Apple Music).
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-[1000] md:hidden"
     >
       <div className="pointer-events-auto">
-        <div
-          className="glass-strong glass-shine rounded-t-[28px] px-2 pt-2"
-          style={{
-            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 0.375rem)",
-          }}
-        >
+        <div className="glass-strong glass-shine rounded-t-[28px] px-2 pt-2 pb-2">
           <div className="relative mx-auto flex max-w-md items-stretch">
             {TABS.map((tab, idx) => {
               const Icon = tab.icon;

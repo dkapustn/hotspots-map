@@ -91,11 +91,9 @@
   @media (min-width: 768px) {
     .pt-safe-content { padding-top: 2rem; }
   }
-  /* Бар теперь расширен за safe-area: реальная высота ≈
-     env(safe-area-inset-bottom) + 70px (tabs + pt). Контент должен
-     иметь равный pb, иначе при скролле в конец последний элемент
-     прячется за глассовым баром. */
-  .pb-safe-nav { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5rem); }
+  /* Бар компактный (~62px: pt-2 + tabs + pb-2). Контенту 5rem pb
+     достаточно чтобы последний элемент при скролле не прятался под баром. */
+  .pb-safe-nav { padding-bottom: 5rem; }
   @media (min-width: 768px) {
     .pb-safe-nav { padding-bottom: 2rem; }
   }
