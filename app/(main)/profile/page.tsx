@@ -6,7 +6,6 @@ import { attachAuthor } from "@/lib/spot-helpers";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Achievements } from "@/components/profile/Achievements";
 import { initials, formatRelativeTime } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -85,18 +84,6 @@ export default async function MyProfilePage() {
             <Stat icon={Footprints} value={visited.length} label="Посещено" />
             <Stat icon={Heart} value={likesReceived} label="Получено лайков" />
           </div>
-        </div>
-
-        {/* Достижения */}
-        <div className="mt-6">
-          <Achievements
-            stats={{
-              spotsCount: mySpots.length,
-              visitsCount: visited.length,
-              likesReceived,
-              likesGiven: liked.length,
-            }}
-          />
         </div>
 
         <Tabs defaultValue="mine" className="mt-6">

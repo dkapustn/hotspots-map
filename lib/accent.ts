@@ -4,7 +4,6 @@
 export type AccentId =
   | "orange"
   | "red"
-  | "pink"
   | "purple"
   | "blue"
   | "teal"
@@ -20,16 +19,15 @@ export interface AccentPreset {
 }
 
 export const ACCENT_PRESETS: AccentPreset[] = [
+  { id: "purple", label: "Фиолетовый",hsl: "270 75% 60%", swatch: "#a855f7" },
   { id: "orange", label: "Оранжевый", hsl: "14 95% 56%",  swatch: "#f56131" },
   { id: "red",    label: "Красный",   hsl: "0 85% 60%",   swatch: "#ef4444" },
-  { id: "pink",   label: "Розовый",   hsl: "340 82% 60%", swatch: "#ec4899" },
-  { id: "purple", label: "Фиолетовый",hsl: "270 75% 60%", swatch: "#a855f7" },
   { id: "blue",   label: "Синий",     hsl: "215 90% 58%", swatch: "#3b82f6" },
   { id: "teal",   label: "Бирюзовый", hsl: "175 75% 45%", swatch: "#14b8a6" },
   { id: "green",  label: "Зелёный",   hsl: "145 65% 45%", swatch: "#22c55e" },
 ];
 
-export const DEFAULT_ACCENT: AccentId = "orange";
+export const DEFAULT_ACCENT: AccentId = "purple";
 const STORAGE_KEY = "hotspots:accent:v1";
 
 export function getStoredAccent(): AccentId {

@@ -10,19 +10,19 @@
     --card-foreground: 224 71% 4%;
     --popover: 0 0% 100%;
     --popover-foreground: 224 71% 4%;
-    --primary: 14 95% 56%;
+    --primary: 270 75% 60%;
     --primary-foreground: 0 0% 100%;
     --secondary: 220 14% 96%;
     --secondary-foreground: 220 13% 26%;
     --muted: 220 14% 96%;
     --muted-foreground: 220 9% 46%;
-    --accent: 14 95% 96%;
-    --accent-foreground: 14 80% 30%;
+    --accent: 270 75% 96%;
+    --accent-foreground: 270 60% 30%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 14 95% 56%;
+    --ring: 270 75% 60%;
     --radius: 1.25rem;
     /* Liquid Glass tokens — LIGHT */
     --glass-tint: 255 255 255;
@@ -45,19 +45,19 @@
     --card-foreground: 210 20% 98%;
     --popover: 220 25% 9%;
     --popover-foreground: 210 20% 98%;
-    --primary: 16 100% 60%;
+    --primary: 270 80% 65%;
     --primary-foreground: 0 0% 100%;
     --secondary: 217 19% 14%;
     --secondary-foreground: 210 20% 98%;
     --muted: 217 19% 14%;
     --muted-foreground: 217 11% 65%;
-    --accent: 14 60% 18%;
-    --accent-foreground: 14 95% 85%;
+    --accent: 270 45% 22%;
+    --accent-foreground: 270 75% 85%;
     --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
     --border: 217 19% 20%;
     --input: 217 19% 20%;
-    --ring: 16 100% 60%;
+    --ring: 270 80% 65%;
     /* Liquid Glass tokens — DARK
        glass-tint совпадает с background hue для бесшовности. */
     --glass-tint: 30 33 44;
