@@ -35,17 +35,24 @@ export function BottomNav() {
   const activeIdx = TABS.findIndex((t) => t.match(pathname));
 
   return (
-    <nav
-      aria-label="Главная навигация"
-      // Бар прижат ко дну (bottom: 0). pb-внутри ОЧЕНЬ маленькое (8px)
-      // — иначе iOS PWA safe-area-inset-bottom (~34px) создаёт визуальную
-      // «полосу пустоты» под табами. Home-indicator iOS рисует поверх
-      // нижнего края бара полупрозрачно (как Telegram / X / Apple Music).
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-[1000] md:hidden"
-    >
-      <div className="pointer-events-auto">
-        <div className="glass-strong glass-shine rounded-t-[28px] px-2 pt-2 pb-2">
-          <div className="relative mx-auto flex max-w-md items-stretch">
+    <>
+      {/* SAFETY FILLER — гарантированно покрывает зону iOS home-indicator
+          glass-материалом, даже если main/outer-контейнер не доходит
+          до неё (iOS PWA standalone quirk с `fixed inset-0`).
+          z-[999] ниже бара, но выше карты. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-[999] glass-strong md:hidden"
+        style={{ height: "max(env(safe-area-inset-bottom, 0px), 1px)" }}
+      />
+
+      <nav
+        aria-label="Главная навигация"
+        className="pointer-events-none fixed inset-x-0 bottom-0 z-[1000] md:hidden"
+      >
+        <div className="pointer-events-auto">
+          <div className="glass-strong glass-shine rounded-t-[28px] px-2 pt-2 pb-2 border-t border-primary/30">
+            <div className="relative mx-auto flex max-w-md items-stretch">
             {TABS.map((tab, idx) => {
               const Icon = tab.icon;
               const active = idx === activeIdx;
@@ -83,9 +90,10 @@ export function BottomNav() {
                 </Link>
               );
             })}
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 }
