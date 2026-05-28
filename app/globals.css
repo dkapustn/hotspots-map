@@ -102,10 +102,8 @@
   @media (min-width: 768px) {
     .pt-safe-content { padding-top: 2rem; }
   }
-  /* Бар теперь только h-14 (56px) без env-pb. Контенту нужен env + 4rem
-     чтобы скролл не прятал низ за баром (бар сам торчит ~56px, но
-     зона safe-area ниже него тоже визуально часть бара). */
-  .pb-safe-nav { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4rem); }
+  /* Бар: h-[68px] solid. Контенту pb 5rem чтобы скролл не прятал низ. */
+  .pb-safe-nav { padding-bottom: 5rem; }
   @media (min-width: 768px) {
     .pb-safe-nav { padding-bottom: 2rem; }
   }
