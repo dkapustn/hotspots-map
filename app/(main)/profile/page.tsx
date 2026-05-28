@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Settings, Plus, MapPin, Footprints, Heart } from "lucide-react";
+import { Settings, Plus, MapPin, Footprints, Heart, Users, UserCheck } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { attachAuthor } from "@/lib/spot-helpers";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -54,6 +54,24 @@ export default async function MyProfilePage() {
     likesReceived = count ?? 0;
   }
 
+  // Подписчики, подписки, друзья (взаимные)
+  const [followersCountRes, followingCountRes, friendsRes] = await Promise.all([
+    supabase
+      .from("follows")
+      .select("*", { count: "exact", head: true })
+      .eq("followee_id", user.id),
+    supabase
+      .from("follows")
+      .select("*", { count: "exact", head: true })
+      .eq("follower_id", user.id),
+    supabase.from("friendships").select("user1_id, user2_id"),
+  ]);
+  const followersCount = followersCountRes.count ?? 0;
+  const followingCount = followingCountRes.count ?? 0;
+  const friendsCount = (friendsRes.data ?? []).filter(
+    (f) => f.user1_id === user.id || f.user2_id === user.id,
+  ).length;
+
   return (
     <div className="h-full scroll-area pb-safe-nav">
       <div className="mx-auto max-w-3xl px-4 md:px-8 pt-safe-content">
@@ -82,7 +100,12 @@ export default async function MyProfilePage() {
           <div className="mt-5 grid grid-cols-3 gap-3 text-center">
             <Stat icon={MapPin} value={mySpots.length} label="Меток" />
             <Stat icon={Footprints} value={visited.length} label="Посещено" />
-            <Stat icon={Heart} value={likesReceived} label="Получено лайков" />
+            <Stat icon={Heart} value={likesReceived} label="Лайков" />
+          </div>
+          <div className="mt-3 grid grid-cols-3 gap-3 text-center">
+            <Stat icon={Users} value={followersCount} label="Подписчики" />
+            <Stat icon={UserCheck} value={followingCount} label="Подписки" />
+            <Stat icon={Users} value={friendsCount} label="Друзья" />
           </div>
         </div>
 

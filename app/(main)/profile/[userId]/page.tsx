@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, MapPin, Footprints, Heart } from "lucide-react";
+import { ArrowLeft, MapPin, Footprints, Heart, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { attachAuthor } from "@/lib/spot-helpers";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { FollowButton } from "@/components/user/FollowButton";
 import { initials, formatRelativeTime } from "@/lib/utils";
 import type { Profile, Spot } from "@/lib/types";
 
@@ -20,7 +21,22 @@ export default async function PublicProfilePage({ params }: { params: { userId: 
   const profile = profileRes.data as Profile | null;
   if (!profile) notFound();
 
-  const [spotsRes, visitsRes, likesRes] = await Promise.all([
+  const {
+    data: { user: currentUser },
+  } = await supabase.auth.getUser();
+  const isOwnProfile = currentUser?.id === profile.id;
+  const isAnonymous = currentUser?.is_anonymous === true;
+
+  // followers count + currentUser's follow / friend status
+  const [
+    spotsRes,
+    visitsRes,
+    likesRes,
+    followersCountRes,
+    followingCountRes,
+    iFollowRes,
+    theyFollowMeRes,
+  ] = await Promise.all([
     supabase
       .from("spots")
       .select("*, profiles!spots_user_id_fkey(id, username, avatar_url)")
@@ -28,10 +44,40 @@ export default async function PublicProfilePage({ params }: { params: { userId: 
       .order("created_at", { ascending: false }),
     supabase.from("visits").select("*", { count: "exact", head: true }).eq("user_id", profile.id),
     supabase.from("likes").select("*", { count: "exact", head: true }).eq("user_id", profile.id),
+    supabase
+      .from("follows")
+      .select("*", { count: "exact", head: true })
+      .eq("followee_id", profile.id),
+    supabase
+      .from("follows")
+      .select("*", { count: "exact", head: true })
+      .eq("follower_id", profile.id),
+    currentUser && !isOwnProfile
+      ? supabase
+          .from("follows")
+          .select("follower_id")
+          .eq("follower_id", currentUser.id)
+          .eq("followee_id", profile.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null } as { data: { follower_id: string } | null }),
+    currentUser && !isOwnProfile
+      ? supabase
+          .from("follows")
+          .select("follower_id")
+          .eq("follower_id", profile.id)
+          .eq("followee_id", currentUser.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null } as { data: { follower_id: string } | null }),
   ]);
 
   const visitsCount = visitsRes.count ?? 0;
   const likesCount = likesRes.count ?? 0;
+  const followersCount = followersCountRes.count ?? 0;
+  const followingCount = followingCountRes.count ?? 0;
+  const iFollow = !!iFollowRes.data;
+  const theyFollowMe = !!theyFollowMeRes.data;
+  const friends = iFollow && theyFollowMe;
+
   const rawSpots = (spotsRes.data ?? []) as unknown as Array<
     Spot & { profiles: Pick<Profile, "id" | "username" | "avatar_url"> | null }
   >;
@@ -57,11 +103,21 @@ export default async function PublicProfilePage({ params }: { params: { userId: 
               <h1 className="truncate text-2xl font-bold">{profile.username}</h1>
               {profile.bio && <p className="mt-1 text-sm text-foreground/80">{profile.bio}</p>}
             </div>
+            {!isOwnProfile && currentUser && (
+              <FollowButton
+                userId={profile.id}
+                initialFollowing={iFollow}
+                initialFriends={friends}
+                isAnonymous={isAnonymous}
+              />
+            )}
           </div>
-          <div className="mt-5 grid grid-cols-3 gap-3 text-center">
+          <div className="mt-5 grid grid-cols-3 gap-3 text-center sm:grid-cols-5">
             <MiniStat icon={MapPin} value={list.length} label="Меток" />
             <MiniStat icon={Footprints} value={visitsCount ?? 0} label="Посещений" />
             <MiniStat icon={Heart} value={likesCount ?? 0} label="Лайков" />
+            <MiniStat icon={Users} value={followersCount} label="Подписчики" />
+            <MiniStat icon={Users} value={followingCount} label="Подписки" />
           </div>
         </div>
 

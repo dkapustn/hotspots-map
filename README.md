@@ -26,7 +26,8 @@ npm install
 2. Создайте новый запрос, вставьте содержимое файла [`supabase/migrations/0001_init.sql`](./supabase/migrations/0001_init.sql), выполните.
 3. Этот скрипт создаст таблицы `profiles / spots / visits / likes / comments`, view `spot_stats`, RLS-политики, триггер автосоздания профиля и Storage-бакеты `spot-photos`/`avatars` с политиками.
 4. Запусти второй файл — [`supabase/migrations/0002_realtime.sql`](./supabase/migrations/0002_realtime.sql) — чтобы карта обновлялась в реальном времени, когда другие пользователи создают метки.
-5. (Опционально) Включи гостевой вход: **Authentication → Sign In / Up → Anonymous Sign-Ins** → переключи в **Allow**. После этого на странице входа появится рабочая кнопка «Войти как гость».
+5. Запусти третий файл — [`supabase/migrations/0003_follows.sql`](./supabase/migrations/0003_follows.sql) — таблица подписок + view `friendships` (взаимные подписки = друзья). RLS-политика запрещает анонимам подписываться.
+6. (Опционально) Включи гостевой вход: **Authentication → Sign In / Up → Anonymous Sign-Ins** → переключи в **Allow**. После этого на странице входа появится рабочая кнопка «Войти как гость».
 
 ### 4. Скопируйте API ключи
 
