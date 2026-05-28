@@ -2,12 +2,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Map, Plus, Trophy, User, Settings } from "lucide-react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const TABS = [
   { href: "/", label: "Карта", icon: Map, match: (p: string) => p === "/" },
   { href: "/top", label: "Топ", icon: Trophy, match: (p: string) => p.startsWith("/top") },
-  { href: "/create", label: "Создать", icon: Plus, match: (p: string) => p === "/create" },
+  {
+    href: "/create",
+    label: "Создать",
+    icon: Plus,
+    primary: true,
+    match: (p: string) => p === "/create",
+  },
   {
     href: "/profile",
     label: "Профиль",
@@ -25,29 +32,56 @@ const TABS = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const activeIdx = TABS.findIndex((t) => t.match(pathname));
 
   return (
     <nav
       aria-label="Главная навигация"
-      className="fixed inset-x-0 bottom-0 z-[1000] border-t border-border bg-background md:hidden"
+      // Та же простая позиция (полная ширина, прижата к низу, safe-area
+      // как padding ВНУТРИ) — НО с Liquid Glass материалом сверху.
+      className="glass-strong glass-shine fixed inset-x-0 bottom-0 z-[1000] rounded-t-[28px] md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
-      <div className="flex h-14 items-stretch">
-        {TABS.map((tab) => {
+      <div className="mx-auto flex h-14 max-w-md items-stretch px-2">
+        {TABS.map((tab, idx) => {
           const Icon = tab.icon;
-          const active = tab.match(pathname);
+          const active = idx === activeIdx;
+          const isPrimary = "primary" in tab && tab.primary;
+
           return (
             <Link
               key={tab.href}
               href={tab.href}
               aria-label={tab.label}
               className={cn(
-                "flex flex-1 flex-col items-center justify-center gap-0.5 text-[10px]",
-                active ? "text-primary" : "text-muted-foreground",
+                "group relative flex flex-1 flex-col items-center justify-center gap-0.5 text-[10px] font-medium transition-colors",
+                isPrimary
+                  ? "text-foreground"
+                  : active
+                    ? "text-primary"
+                    : "text-muted-foreground",
               )}
             >
-              <Icon className="h-5 w-5" />
-              <span>{tab.label}</span>
+              {/* Активная «пилюля» с морфингом между табами */}
+              {active && !isPrimary && (
+                <motion.span
+                  layoutId="liquid-nav-pill"
+                  className="absolute inset-x-1 inset-y-1.5 -z-0 rounded-2xl bg-foreground/10 dark:bg-white/12"
+                  transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                />
+              )}
+
+              {isPrimary ? (
+                <span className="relative flex h-9 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-orange-500 text-white shadow-lg shadow-primary/40 transition-transform group-active:scale-95">
+                  <Icon className="h-5 w-5" strokeWidth={2.6} />
+                </span>
+              ) : (
+                <Icon
+                  className="relative z-10 h-5 w-5"
+                  strokeWidth={active ? 2.5 : 2}
+                />
+              )}
+              {!isPrimary && <span className="relative z-10">{tab.label}</span>}
             </Link>
           );
         })}
