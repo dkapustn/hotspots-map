@@ -145,6 +145,30 @@ export type Database = {
         };
         Relationships: [];
       };
+      ratings: {
+        Row: {
+          user_id: string;
+          spot_id: string;
+          value: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          spot_id: string;
+          value: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          spot_id?: string;
+          value?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       spot_stats: {
@@ -160,6 +184,8 @@ export type Database = {
           likes_count: number;
           visits_count: number;
           comments_count: number;
+          ratings_count: number;
+          avg_rating: number;
         };
         Relationships: [];
       };

@@ -11,7 +11,7 @@ export default async function SpotPage({ params }: { params: { id: string } }) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [{ data: spot }, statsRes, userLikeRes, userVisitRes, commentsRes] = await Promise.all([
+  const [{ data: spot }, statsRes, userLikeRes, userVisitRes, userRatingRes, commentsRes] = await Promise.all([
     supabase
       .from("spots")
       .select("*, profiles!spots_user_id_fkey(id, username, avatar_url)")
@@ -19,7 +19,7 @@ export default async function SpotPage({ params }: { params: { id: string } }) {
       .maybeSingle(),
     supabase
       .from("spot_stats")
-      .select("likes_count, visits_count, comments_count")
+      .select("likes_count, visits_count, comments_count, avg_rating, ratings_count")
       .eq("id", params.id)
       .maybeSingle(),
     user
@@ -38,6 +38,14 @@ export default async function SpotPage({ params }: { params: { id: string } }) {
           .eq("spot_id", params.id)
           .maybeSingle()
       : Promise.resolve({ data: null } as any),
+    user
+      ? supabase
+          .from("ratings")
+          .select("value")
+          .eq("user_id", user.id)
+          .eq("spot_id", params.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null } as any),
     supabase
       .from("comments")
       .select("*, profiles!comments_user_id_fkey(id, username, avatar_url)")
@@ -49,7 +57,14 @@ export default async function SpotPage({ params }: { params: { id: string } }) {
   if (!spot) notFound();
 
   const withAuthor = attachAuthor(spot as any);
-  const stats = statsRes.data ?? { likes_count: 0, visits_count: 0, comments_count: 0 };
+  const stats = statsRes.data ?? {
+    likes_count: 0,
+    visits_count: 0,
+    comments_count: 0,
+    avg_rating: 0,
+    ratings_count: 0,
+  };
+  const userRatingValue = (userRatingRes.data as { value: number } | null)?.value ?? null;
 
   return (
     <SpotDetail
@@ -57,6 +72,7 @@ export default async function SpotPage({ params }: { params: { id: string } }) {
       stats={stats}
       initialLiked={!!userLikeRes.data}
       initialVisited={!!userVisitRes.data}
+      initialUserRating={userRatingValue}
       initialComments={(commentsRes.data ?? []) as any}
       currentUserId={user?.id ?? null}
     />

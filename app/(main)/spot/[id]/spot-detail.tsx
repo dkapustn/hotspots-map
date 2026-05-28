@@ -13,6 +13,7 @@ import { CommentsList } from "@/components/spot/CommentsList";
 import { ShareButton } from "@/components/spot/ShareButton";
 import { DistanceBadge } from "@/components/spot/DistanceBadge";
 import { PhotoLightbox } from "@/components/spot/PhotoLightbox";
+import { SpotRating } from "@/components/spot/SpotRating";
 import { formatRelativeTime, initials } from "@/lib/utils";
 import type { SpotWithAuthor } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
@@ -30,13 +31,21 @@ export function SpotDetail({
   stats,
   initialLiked,
   initialVisited,
+  initialUserRating,
   initialComments,
   currentUserId,
 }: {
   spot: SpotWithAuthor;
-  stats: { likes_count: number; visits_count: number; comments_count: number };
+  stats: {
+    likes_count: number;
+    visits_count: number;
+    comments_count: number;
+    avg_rating: number;
+    ratings_count: number;
+  };
   initialLiked: boolean;
   initialVisited: boolean;
+  initialUserRating: number | null;
   initialComments: CommentRow[];
   currentUserId: string | null;
 }) {
@@ -163,6 +172,16 @@ export function SpotDetail({
         )}
 
         {/* Coords */}
+        {/* Rating */}
+        {currentUserId && (
+          <SpotRating
+            spotId={spot.id}
+            initialUserValue={initialUserRating}
+            initialAverage={Number(stats.avg_rating ?? 0)}
+            initialCount={stats.ratings_count ?? 0}
+          />
+        )}
+
         <div className="flex items-center gap-2 rounded-xl border bg-card p-3 text-xs text-muted-foreground">
           <MapPin className="h-4 w-4 text-primary" />
           {spot.latitude.toFixed(5)}, {spot.longitude.toFixed(5)}
