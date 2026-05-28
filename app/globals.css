@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 30 30% 98%;
+    --background: 28 30% 98%;
     --foreground: 224 71% 4%;
     --card: 0 0% 100%;
     --card-foreground: 224 71% 4%;
@@ -24,22 +24,23 @@
     --input: 220 13% 91%;
     --ring: 14 95% 56%;
     --radius: 1.25rem;
-    /* Liquid Glass tokens */
+    /* Liquid Glass tokens — LIGHT */
     --glass-tint: 255 255 255;
-    --glass-tint-alpha: 0.6;
-    --glass-border: 255 255 255 / 0.5;
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    --glass-alpha: 0.65;
+    --glass-strong-alpha: 0.82;
+    --glass-border: rgb(255 255 255 / 0.6);
+    --glass-shadow:
+      0 1px 0 0 rgb(255 255 255 / 0.5) inset,
+      0 8px 32px rgb(0 0 0 / 0.08),
+      0 2px 8px rgb(0 0 0 / 0.04);
   }
 
   .dark {
-    /* Подобран ровно под --glass-tint: rgb(20 22 30). Если бар или
-       safety-filler по любой iOS-причине не доходит до низа экрана —
-       проступающий фон визуально неотличим от бара. */
-    --background: 222 20% 10%;
+    --background: 222 25% 6%;
     --foreground: 210 20% 98%;
-    --card: 220 30% 9%;
+    --card: 220 25% 9%;
     --card-foreground: 210 20% 98%;
-    --popover: 220 30% 9%;
+    --popover: 220 25% 9%;
     --popover-foreground: 210 20% 98%;
     --primary: 16 100% 60%;
     --primary-foreground: 0 0% 100%;
@@ -54,11 +55,16 @@
     --border: 217 19% 20%;
     --input: 217 19% 20%;
     --ring: 16 100% 60%;
-    /* Liquid Glass tokens — dark */
-    --glass-tint: 20 22 30;
-    --glass-tint-alpha: 0.6;
-    --glass-border: 255 255 255 / 0.08;
-    --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+    /* Liquid Glass tokens — DARK
+       glass-tint совпадает с background hue для бесшовности. */
+    --glass-tint: 30 33 44;
+    --glass-alpha: 0.55;
+    --glass-strong-alpha: 0.72;
+    --glass-border: rgb(255 255 255 / 0.08);
+    --glass-shadow:
+      0 1px 0 0 rgb(255 255 255 / 0.06) inset,
+      0 12px 40px rgb(0 0 0 / 0.45),
+      0 2px 8px rgb(0 0 0 / 0.3);
   }
 }
 
@@ -78,15 +84,14 @@
     @apply text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
     overflow: hidden;
-    /* Liquid: тонкие градиенты под стеклом — даёт «жизнь» цвету за blur. */
     background:
-      radial-gradient(1200px 600px at 100% 0%, hsl(var(--primary) / 0.08), transparent 55%),
-      radial-gradient(900px 500px at 0% 100%, hsl(280 70% 55% / 0.06), transparent 50%),
-      radial-gradient(700px 400px at 50% 40%, hsl(190 80% 50% / 0.05), transparent 60%),
+      radial-gradient(1200px 600px at 100% 0%, hsl(var(--primary) / 0.06), transparent 55%),
+      radial-gradient(900px 500px at 0% 100%, hsl(280 70% 55% / 0.05), transparent 50%),
+      radial-gradient(700px 400px at 50% 40%, hsl(190 80% 50% / 0.04), transparent 60%),
       hsl(var(--background));
   }
 
-  /* Safe areas */
+  /* Safe-area helpers */
   .pb-safe { padding-bottom: max(env(safe-area-inset-bottom, 0px), 0.5rem); }
   .pt-safe { padding-top: max(env(safe-area-inset-top, 0px), 0.5rem); }
   .mt-safe { margin-top: env(safe-area-inset-top, 0px); }
@@ -94,21 +99,14 @@
   @media (min-width: 768px) {
     .pt-safe-content { padding-top: 2rem; }
   }
-  /* Бар компактный: pt-2 (8) + tabs (~42) + pb-1 (4) = ~54px видимая
-     часть. С учётом transform translateY(env) ≈ env + 54.
-     Контент должен иметь pb env + 4rem чтобы скролл не прятал низ. */
-  .pb-safe-nav { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4rem); }
+  /* Контенту под BottomNav нужен запас под высоту бара + его offset
+     от низа (env safe-area + 8px). Бар h ~62px + 8 + env. */
+  .pb-safe-nav { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 5.5rem); }
   @media (min-width: 768px) {
     .pb-safe-nav { padding-bottom: 2rem; }
   }
 
-  /* iOS-friendly scroll container.
-     - overflow-y: scroll (а не auto) → стабильнее height/scrollbar
-     - -webkit-overflow-scrolling: touch → плавный momentum scroll
-     - overscroll-behavior-y: contain → убирает «резинку», которая
-       выбрасывала пользователя вверх при достижении конца
-     - scroll-padding-bottom → когда iOS прокручивает focused input в
-       зону видимости, оставляет запас под BottomNav */
+  /* iOS-friendly scroll */
   .scroll-area {
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
@@ -116,49 +114,41 @@
     scroll-padding-bottom: 6rem;
   }
 
-  /* iOS зумит viewport если font-size инпута < 16px при фокусе. Фиксим
-     глобально, чтобы избежать визуальных «прыжков» страницы. */
-  input, textarea, select {
-    font-size: 16px;
-  }
+  /* iOS не зумит при font-size >= 16px */
+  input, textarea, select { font-size: 16px; }
   @media (min-width: 768px) {
     input, textarea, select { font-size: 14px; }
   }
 }
 
 @layer components {
-  /* ── LIQUID GLASS ── */
+  /* ── Liquid Glass materials ── */
 
-  /* Базовое стекло — основа для всех glass-поверхностей.
-     Heavy blur + saturate усиливают цвета за стеклом, тонкая внутренняя
-     обводка имитирует край стекла. */
   .glass {
-    background: rgb(var(--glass-tint) / var(--glass-tint-alpha));
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid rgb(var(--glass-border));
+    background: rgb(var(--glass-tint) / var(--glass-alpha));
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
   }
 
-  /* Усиленное стекло — для floating bars / sheets / диалогов. */
   .glass-strong {
-    background: rgb(var(--glass-tint) / 0.78);
-    -webkit-backdrop-filter: blur(48px) saturate(220%);
-    backdrop-filter: blur(48px) saturate(220%);
-    border: 1px solid rgb(var(--glass-border));
+    background: rgb(var(--glass-tint) / var(--glass-strong-alpha));
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    backdrop-filter: blur(40px) saturate(200%);
+    border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
   }
 
-  /* Лёгкое стекло — для inline chips / кнопок. */
   .glass-subtle {
     background: rgb(var(--glass-tint) / 0.4);
     -webkit-backdrop-filter: blur(16px) saturate(160%);
     backdrop-filter: blur(16px) saturate(160%);
-    border: 1px solid rgb(var(--glass-border));
+    border: 1px solid var(--glass-border);
   }
 
-  /* Specular highlight — тонкая шайн-полоска сверху имитирует
-     преломление света на верхней грани стекла. */
+  /* Specular shine — тонкая light-line по верхней грани glass-поверхности
+     (имитация преломления света на верхнем краю стекла). */
   .glass-shine {
     position: relative;
   }
@@ -168,7 +158,10 @@
     inset: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.35) 0%, transparent 30%, transparent 100%);
+    background: linear-gradient(180deg,
+      rgb(255 255 255 / 0.4) 0%,
+      transparent 25%,
+      transparent 100%);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
@@ -176,13 +169,10 @@
     pointer-events: none;
   }
   .dark .glass-shine::before {
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.12) 0%, transparent 35%, transparent 100%);
-  }
-
-  /* Card в Liquid стиле */
-  .card-glass {
-    @apply glass;
-    @apply rounded-2xl;
+    background: linear-gradient(180deg,
+      rgb(255 255 255 / 0.14) 0%,
+      transparent 30%,
+      transparent 100%);
   }
 }
 
@@ -199,18 +189,9 @@
   touch-action: none;
 }
 .leaflet-control-attribution {
-  background: rgb(var(--glass-tint) / 0.7) !important;
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
-  color: hsl(var(--muted-foreground)) !important;
-  font-size: 10px !important;
-  padding: 2px 6px !important;
-  border-radius: 8px !important;
+  display: none !important;
 }
-.leaflet-control-attribution a { color: hsl(var(--primary)) !important; }
 .leaflet-control-zoom { display: none; }
-/* Раньше был filter: brightness(0.7) — делал тёмные тайлы нечитаемыми.
-   Теперь стиль карты выбирается пользователем явно в настройках. */
 
 .spot-marker {
   background: transparent !important;
@@ -237,8 +218,8 @@
   width: 12px; height: 12px;
   background: white;
 }
-.dark .spot-marker-inner { border-color: hsl(220 30% 14%); }
-.dark .spot-marker-inner::after { background: hsl(220 30% 14%); }
+.dark .spot-marker-inner { border-color: hsl(220 25% 12%); }
+.dark .spot-marker-inner::after { background: hsl(220 25% 12%); }
 
 .user-location-marker {
   width: 22px;
@@ -254,10 +235,7 @@
   100% { box-shadow: 0 0 0 4px rgba(37,99,235,0.18), 0 0 0 24px rgba(37,99,235,0); }
 }
 
-.marker-cluster {
-  background: hsl(var(--primary) / 0.2) !important;
-  border-radius: 50%;
-}
+.marker-cluster { background: hsl(var(--primary) / 0.2) !important; border-radius: 50%; }
 .marker-cluster div {
   background: hsl(var(--primary)) !important;
   color: white !important;
@@ -269,6 +247,4 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-.skeleton {
-  @apply animate-pulse rounded-md bg-muted;
-}
+.skeleton { @apply animate-pulse rounded-md bg-muted; }

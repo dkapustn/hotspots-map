@@ -35,29 +35,21 @@ export function BottomNav() {
   const activeIdx = TABS.findIndex((t) => t.match(pathname));
 
   return (
-    <>
-      {/* Safety filler: solid bg-background color matching --glass-tint.
-          Покрывает зону под баром одинаковым цветом, даже если iOS
-          клиппит и бар, и transform. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-[999] md:hidden"
-        style={{
-          height: "max(env(safe-area-inset-bottom, 0px), 1px)",
-          background: "rgb(var(--glass-tint))",
-        }}
-      />
-
-      <nav
-        aria-label="Главная навигация"
-        // transform: translateY(env) пушит бар вниз ПОВЕРХ safe-area.
-        // Внутри pb-1 (4px) — кнопки буквально у нижнего края бара.
-        className="pointer-events-none fixed inset-x-0 bottom-0 z-[1000] md:hidden"
-        style={{ transform: "translateY(env(safe-area-inset-bottom, 0px))" }}
-      >
-        <div className="pointer-events-auto">
-          <div className="glass-strong glass-shine rounded-t-[28px] px-2 pt-2 pb-1 border-t border-primary/30">
-            <div className="relative mx-auto flex max-w-md items-stretch">
+    <nav
+      aria-label="Главная навигация"
+      // FLOATING LIQUID PILL: отступ от боков (inset-x-3 = 12px), снизу
+      // = env(safe-area-inset-bottom) + 8px. На iPhone PWA это ставит
+      // бар естественным образом над зоной home-indicator с небольшим
+      // воздухом. iOS-клиппинг к safe-area здесь не мешает — мы и
+      // позиционируем выше safe-area намеренно (это «парящий» эффект).
+      // Под баром автоматически визуально остаётся зона home-indicator
+      // — там виден глобальный фон/карта.
+      className="pointer-events-none fixed inset-x-3 z-[1000] md:hidden"
+      style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 0.5rem)" }}
+    >
+      <div className="pointer-events-auto mx-auto max-w-md">
+        <div className="glass-strong glass-shine rounded-[26px] p-1.5">
+          <div className="relative flex items-stretch">
             {TABS.map((tab, idx) => {
               const Icon = tab.icon;
               const active = idx === activeIdx;
@@ -70,17 +62,22 @@ export function BottomNav() {
                   aria-label={tab.label}
                   className="relative flex flex-1 items-center justify-center py-2.5"
                 >
-                  {/* Активная «пилюля» с shared-layout анимацией */}
+                  {/* Active morph pill (shared layout) */}
                   {active && !isPrimary && (
                     <motion.span
-                      layoutId="nav-pill"
-                      className="absolute inset-0 rounded-[20px] bg-foreground/10 dark:bg-white/10"
+                      layoutId="liquid-nav-pill"
+                      className="absolute inset-0 rounded-[18px] bg-foreground/10 dark:bg-white/12"
                       transition={{ type: "spring", stiffness: 380, damping: 32 }}
                     />
                   )}
 
                   {isPrimary ? (
-                    <span className="relative flex h-9 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-orange-500 text-white shadow-lg shadow-primary/35 transition-transform active:scale-95">
+                    <span
+                      className={cn(
+                        "relative flex h-9 w-12 items-center justify-center rounded-2xl text-white shadow-lg transition-transform active:scale-95",
+                        "bg-gradient-to-br from-primary to-orange-500 shadow-primary/35",
+                      )}
+                    >
                       <Icon className="h-5 w-5" strokeWidth={2.6} />
                     </span>
                   ) : (
@@ -95,10 +92,9 @@ export function BottomNav() {
                 </Link>
               );
             })}
-            </div>
           </div>
         </div>
-      </nav>
-    </>
+      </div>
+    </nav>
   );
 }
