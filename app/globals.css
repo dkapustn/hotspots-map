@@ -36,7 +36,10 @@
   }
 
   .dark {
-    --background: 222 25% 6%;
+    /* Совпадает с --glass-tint rgb(30 33 44) ≈ hsl(220 19% 14%).
+       Без этого зона iOS safe-area (где нет покрытия) визуально темнее
+       бара — видна как «дыра». С совпадающим цветом — невидима. */
+    --background: 220 19% 13%;
     --foreground: 210 20% 98%;
     --card: 220 25% 9%;
     --card-foreground: 210 20% 98%;
@@ -99,8 +102,9 @@
   @media (min-width: 768px) {
     .pt-safe-content { padding-top: 2rem; }
   }
-  /* Бар: h-14 (56px) + env safe-area. Контенту нужен env + 4rem pb
-     чтобы скролл не прятал низ за баром. */
+  /* Бар теперь только h-14 (56px) без env-pb. Контенту нужен env + 4rem
+     чтобы скролл не прятал низ за баром (бар сам торчит ~56px, но
+     зона safe-area ниже него тоже визуально часть бара). */
   .pb-safe-nav { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4rem); }
   @media (min-width: 768px) {
     .pb-safe-nav { padding-bottom: 2rem; }

@@ -40,7 +40,6 @@ export function BottomNav() {
       // Та же простая позиция (полная ширина, прижата к низу, safe-area
       // как padding ВНУТРИ) — НО с Liquid Glass материалом сверху.
       className="glass-strong glass-shine fixed inset-x-0 bottom-0 z-[1000] rounded-t-[28px] md:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
       <div className="mx-auto flex h-14 max-w-md items-stretch px-2">
         {TABS.map((tab, idx) => {
