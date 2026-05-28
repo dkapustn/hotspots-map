@@ -91,9 +91,9 @@
   @media (min-width: 768px) {
     .pt-safe-content { padding-top: 2rem; }
   }
-  /* Бар компактный (~62px: pt-2 + tabs + pb-2). Контенту 5rem pb
-     достаточно чтобы последний элемент при скролле не прятался под баром. */
-  .pb-safe-nav { padding-bottom: 5rem; }
+  /* Бар: pt-2 (8) + tabs (~42) + pb (env + 8) = env + 58 на iPhone PWA.
+     Контенту нужно равный pb чтобы скролл не прятал последний элемент. */
+  .pb-safe-nav { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem); }
   @media (min-width: 768px) {
     .pb-safe-nav { padding-bottom: 2rem; }
   }
