@@ -99,11 +99,9 @@
   @media (min-width: 768px) {
     .pt-safe-content { padding-top: 2rem; }
   }
-  /* Контенту под BottomNav нужен запас: bottom offset + высота бара.
-     Бар: max(env, 1.25rem) + 54px = ≈ env + 5rem на iPhone PWA. */
-  .pb-safe-nav {
-    padding-bottom: calc(max(env(safe-area-inset-bottom, 0px), 1.25rem) + 4.5rem);
-  }
+  /* Бар стоит на bottom-10 (40px) + h ~68px = 108px. Контент должен
+     иметь pb-32 (8rem = 128px) чтобы не прятался за баром. */
+  .pb-safe-nav { padding-bottom: 8rem; }
   @media (min-width: 768px) {
     .pb-safe-nav { padding-bottom: 2rem; }
   }

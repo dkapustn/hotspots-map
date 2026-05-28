@@ -152,17 +152,14 @@ export function MapView({ spots, onSpotClick, flyToSpot }: MapViewProps) {
       </MapContainer>
 
       {/* Floating locate button над floating BottomNav.
-          Бар стоит на max(env, 1.25rem) + ~54px высота = +5.5rem. */}
+          Бар: bottom-10 (40px) + h ~68px = ~108px. Locate выше: 7.5rem. */}
       <Button
         type="button"
         size="icon"
         variant="ghost"
         onClick={handleLocate}
         disabled={locating}
-        className="glass-strong glass-shine absolute right-4 z-[600] h-11 w-11 rounded-full border-0 md:bottom-6"
-        style={{
-          bottom: "calc(max(env(safe-area-inset-bottom, 0px), 1.25rem) + 4.5rem)",
-        }}
+        className="glass-strong glass-shine absolute right-4 bottom-32 z-[600] h-11 w-11 rounded-full border-0 md:bottom-6"
         aria-label="Моя локация"
       >
         {locating ? <Loader2 className="h-5 w-5 animate-spin" /> : <LocateFixed className="h-5 w-5" />}

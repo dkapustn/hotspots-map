@@ -44,15 +44,14 @@ export function BottomNav() {
       // позиционируем выше safe-area намеренно (это «парящий» эффект).
       // Под баром автоматически визуально остаётся зона home-indicator
       // — там виден глобальный фон/карта.
-      className="pointer-events-none fixed inset-x-3 z-[1000] md:hidden"
-      // max() гарантирует МИНИМУМ 1.25rem (20px) от низа — даже если
-      // env(safe-area-inset-bottom) почему-то возвращает 0 или calc
-      // не вычисляется. На iPhone PWA env обычно ~34px, и max выберет
-      // его (бар над зоной home-indicator). Без max() бар обрезался.
-      style={{ bottom: "max(env(safe-area-inset-bottom, 0px), 1.25rem)" }}
+      className="pointer-events-none fixed inset-x-3 bottom-10 z-[1000] md:hidden"
+      // Хардкод bottom-10 (40px) через Tailwind. Если у iOS PWA проблема
+      // с env() / max() в inline style — этот класс гарантированно
+      // обработается на этапе сборки CSS. Бар точно будет в 40px над
+      // низом экрана, на iPhone это над зоной home-indicator (~34px).
     >
       <div className="pointer-events-auto mx-auto max-w-md">
-        <div className="glass-strong glass-shine rounded-[26px] p-1.5">
+        <div className="glass-strong glass-shine rounded-[22px] p-1.5">
           <div className="relative flex items-stretch">
             {TABS.map((tab, idx) => {
               const Icon = tab.icon;
