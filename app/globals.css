@@ -99,9 +99,9 @@
   @media (min-width: 768px) {
     .pt-safe-content { padding-top: 2rem; }
   }
-  /* Бар стоит на bottom-10 (40px) + h ~68px = 108px. Контент должен
-     иметь pb-32 (8rem = 128px) чтобы не прятался за баром. */
-  .pb-safe-nav { padding-bottom: 8rem; }
+  /* Бар: h-14 (56px) + env safe-area. Контенту нужен env + 4rem pb
+     чтобы скролл не прятал низ за баром. */
+  .pb-safe-nav { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4rem); }
   @media (min-width: 768px) {
     .pb-safe-nav { padding-bottom: 2rem; }
   }
