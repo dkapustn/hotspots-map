@@ -70,7 +70,7 @@ export function BottomNav() {
               )}
 
               {isPrimary ? (
-                <span className="relative flex h-11 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-orange-500 text-white shadow-lg shadow-primary/40 transition-transform group-active:scale-95">
+                <span className="relative flex h-11 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-orange-500 text-white transition-transform group-active:scale-95">
                   <Icon className="h-6 w-6" strokeWidth={2.6} />
                 </span>
               ) : (
