@@ -45,7 +45,11 @@ export function BottomNav() {
       // Под баром автоматически визуально остаётся зона home-indicator
       // — там виден глобальный фон/карта.
       className="pointer-events-none fixed inset-x-3 z-[1000] md:hidden"
-      style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 0.5rem)" }}
+      // max() гарантирует МИНИМУМ 1.25rem (20px) от низа — даже если
+      // env(safe-area-inset-bottom) почему-то возвращает 0 или calc
+      // не вычисляется. На iPhone PWA env обычно ~34px, и max выберет
+      // его (бар над зоной home-indicator). Без max() бар обрезался.
+      style={{ bottom: "max(env(safe-area-inset-bottom, 0px), 1.25rem)" }}
     >
       <div className="pointer-events-auto mx-auto max-w-md">
         <div className="glass-strong glass-shine rounded-[26px] p-1.5">
