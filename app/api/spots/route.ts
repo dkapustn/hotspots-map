@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import { SPOT_DESCRIPTION_MAX, SPOT_TITLE_MAX } from "@/lib/constants";
+import { SPOT_DESCRIPTION_MAX, SPOT_MIN_DISTANCE_M, SPOT_TITLE_MAX } from "@/lib/constants";
 import { attachAuthor } from "@/lib/spot-helpers";
 
 const CreateSpotSchema = z.object({
@@ -57,6 +57,19 @@ export async function POST(request: NextRequest) {
   }
 
   const { title, description, latitude, longitude, photo_path } = parsed.data;
+
+  // Нельзя создать метку, если рядом (в пределах SPOT_MIN_DISTANCE_M) уже есть другая.
+  const { data: tooClose } = await supabase.rpc("has_spot_within", {
+    p_lat: latitude,
+    p_lng: longitude,
+    p_meters: SPOT_MIN_DISTANCE_M,
+  });
+  if (tooClose) {
+    return NextResponse.json(
+      { error: "too_close", required_m: SPOT_MIN_DISTANCE_M },
+      { status: 422 },
+    );
+  }
 
   const { data, error } = await supabase
     .from("spots")

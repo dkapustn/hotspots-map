@@ -12,7 +12,12 @@ import { Card } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/client";
 import { compressImage, vibrate } from "@/lib/photo";
 import { getCurrentPosition, type Coords } from "@/lib/geo";
-import { SPOT_DESCRIPTION_MAX, SPOT_PHOTOS_BUCKET, SPOT_TITLE_MAX } from "@/lib/constants";
+import {
+  SPOT_DESCRIPTION_MAX,
+  SPOT_MIN_DISTANCE_M,
+  SPOT_PHOTOS_BUCKET,
+  SPOT_TITLE_MAX,
+} from "@/lib/constants";
 
 export function CreateSpotFlow() {
   const router = useRouter();
@@ -80,6 +85,20 @@ export function CreateSpotFlow() {
       } = await supabase.auth.getUser();
       if (!user) throw new Error("Сначала войдите в аккаунт");
 
+      // Проверяем, нет ли рядом уже существующей метки (до загрузки фото).
+      const { data: tooClose } = await supabase.rpc("has_spot_within", {
+        p_lat: coords.lat,
+        p_lng: coords.lng,
+        p_meters: SPOT_MIN_DISTANCE_M,
+      });
+      if (tooClose) {
+        toast.warning("Здесь уже есть метка", {
+          description: `Рядом (в пределах ${SPOT_MIN_DISTANCE_M} м) уже есть место. Отойдите подальше.`,
+        });
+        setSubmitting(false);
+        return;
+      }
+
       // Upload photo
       const path = `${user.id}/${crypto.randomUUID()}.jpg`;
       const { error: uploadErr } = await supabase.storage
@@ -103,6 +122,11 @@ export function CreateSpotFlow() {
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
+        if (err.error === "too_close") {
+          throw new Error(
+            `Рядом (в пределах ${SPOT_MIN_DISTANCE_M} м) уже есть метка. Отойдите подальше.`,
+          );
+        }
         throw new Error(err.error ?? "Не удалось создать метку");
       }
 

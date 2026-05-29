@@ -26,14 +26,11 @@ export async function POST(
     return NextResponse.json({ error: "invalid_input" }, { status: 400 });
   }
 
-  const [{ data: spot, error: spotErr }, { data: profile }] = await Promise.all([
-    supabase
-      .from("spots")
-      .select("id, latitude, longitude, user_id")
-      .eq("id", params.id)
-      .single(),
-    supabase.from("profiles").select("visit_radius_m").eq("id", user.id).single(),
-  ]);
+  const { data: spot, error: spotErr } = await supabase
+    .from("spots")
+    .select("id, latitude, longitude, user_id")
+    .eq("id", params.id)
+    .single();
 
   if (spotErr || !spot) return NextResponse.json({ error: "not_found" }, { status: 404 });
 
@@ -43,7 +40,8 @@ export async function POST(
     spot.latitude,
     spot.longitude,
   );
-  const radius = profile?.visit_radius_m ?? VISIT_RADIUS_DEFAULT_M;
+  // Радиус посещения теперь фиксированный для всех — 100 м.
+  const radius = VISIT_RADIUS_DEFAULT_M;
 
   if (distance > radius) {
     return NextResponse.json(

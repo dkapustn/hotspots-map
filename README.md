@@ -33,7 +33,8 @@ npm install
 9. Запусти седьмой файл — [`supabase/migrations/0007_notifications.sql`](./supabase/migrations/0007_notifications.sql) — таблица `notifications` + триггеры (лайк/коммент/визит/подписка создают уведомление автоматически) + realtime. **Без этой миграции колокольчик уведомлений на карте будет пустым.**
 10. Запусти восьмой файл — [`supabase/migrations/0008_private_visibility.sql`](./supabase/migrations/0008_private_visibility.sql) — добавляет уровень видимости `private` («Только я») и пересобирает политику чтения меток.
 11. Запусти девятый файл — [`supabase/migrations/0009_per_spot_visibility.sql`](./supabase/migrations/0009_per_spot_visibility.sql) — переносит видимость с профиля на **каждую метку** (колонка `spots.visibility`), пересобирает политику чтения и включает `security_invoker` у view `spot_stats` (чтобы непубличные метки не утекали в Рейтинг). **Без этой миграции меню «три точки» в метке упадёт с ошибкой.**
-12. (Опционально) Включи гостевой вход: **Authentication → Sign In / Up → Anonymous Sign-Ins** → переключи в **Allow**. После этого на странице входа появится рабочая кнопка «Войти как гость».
+12. Запусти десятый файл — [`supabase/migrations/0010_spot_proximity.sql`](./supabase/migrations/0010_spot_proximity.sql) — функция `has_spot_within`, которая запрещает создавать новую метку в радиусе 100 м от уже существующей (учитывает все метки, в т.ч. чужие приватные). **Без неё проверка «рядом уже есть метка» работать не будет.**
+13. (Опционально) Включи гостевой вход: **Authentication → Sign In / Up → Anonymous Sign-Ins** → переключи в **Allow**. После этого на странице входа появится рабочая кнопка «Войти как гость».
 
 ### 4. Скопируйте API ключи
 

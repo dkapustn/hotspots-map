@@ -2,6 +2,9 @@ export const VISIT_RADIUS_DEFAULT_M = 100;
 export const VISIT_RADIUS_MIN_M = 30;
 export const VISIT_RADIUS_MAX_M = 300;
 
+// Нельзя создавать новую метку, если в этом радиусе (м) уже есть другая.
+export const SPOT_MIN_DISTANCE_M = 100;
+
 export const SPOT_TITLE_MAX = 80;
 export const SPOT_DESCRIPTION_MAX = 500;
 export const COMMENT_MAX = 500;

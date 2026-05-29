@@ -3,8 +3,18 @@ import { useEffect, useState } from "react";
 import { Navigation } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCurrentPosition, haversineMeters, formatDistance } from "@/lib/geo";
+import { cn } from "@/lib/utils";
 
-export function DistanceBadge({ lat, lng }: { lat: number; lng: number }) {
+export function DistanceBadge({
+  lat,
+  lng,
+  overlay = false,
+}: {
+  lat: number;
+  lng: number;
+  /** Стиль для наложения поверх фото: тёмное стекло + белый текст. */
+  overlay?: boolean;
+}) {
   const [distance, setDistance] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [denied, setDenied] = useState(false);
@@ -29,9 +39,20 @@ export function DistanceBadge({ lat, lng }: { lat: number; lng: number }) {
   if (denied) return null;
 
   return (
-    <div className="inline-flex h-7 items-center gap-1.5 rounded-full bg-sky-500/10 px-3 text-xs font-medium text-sky-600 dark:text-sky-400">
+    <div
+      className={cn(
+        "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-xs font-medium",
+        overlay
+          ? "bg-black/50 text-white ring-1 ring-white/20 backdrop-blur-md"
+          : "bg-sky-500/10 text-sky-600 dark:text-sky-400",
+      )}
+    >
       <Navigation className="h-3.5 w-3.5" />
-      {loading ? <Skeleton className="h-3 w-12 rounded bg-sky-500/20" /> : <>в {formatDistance(distance ?? 0)} от вас</>}
+      {loading ? (
+        <Skeleton className={cn("h-3 w-12 rounded", overlay ? "bg-white/30" : "bg-sky-500/20")} />
+      ) : (
+        <>в {formatDistance(distance ?? 0)} от вас</>
+      )}
     </div>
   );
 }

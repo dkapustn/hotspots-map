@@ -109,6 +109,11 @@ export function SpotDetail({
             <span>{formatRelativeTime(spot.created_at)}</span>
           </div>
         </div>
+
+        {/* Расстояние до метки — поверх фото, в правом нижнем углу */}
+        <div className="absolute bottom-5 right-4 z-10">
+          <DistanceBadge lat={spot.latitude} lng={spot.longitude} overlay />
+        </div>
       </div>
 
       <div className="mx-auto max-w-2xl px-4 py-6 md:px-8 space-y-6">
@@ -146,8 +151,6 @@ export function SpotDetail({
             />
           )}
         </div>
-
-        <DistanceBadge lat={spot.latitude} lng={spot.longitude} />
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3">

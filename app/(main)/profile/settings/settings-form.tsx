@@ -10,9 +10,7 @@ import {
   Sun,
   Moon,
   Monitor,
-  Bell,
   Save,
-  Palette,
   Map as MapIcon,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -22,18 +20,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
 import { Spinner } from "@/components/ui/spinner";
 import { createClient } from "@/lib/supabase/client";
-import {
-  AVATARS_BUCKET,
-  BIO_MAX,
-  USERNAME_MAX,
-  USERNAME_MIN,
-  VISIT_RADIUS_MAX_M,
-  VISIT_RADIUS_MIN_M,
-} from "@/lib/constants";
+import { AVATARS_BUCKET, BIO_MAX, USERNAME_MAX, USERNAME_MIN } from "@/lib/constants";
 import { compressImage } from "@/lib/photo";
 import { initials } from "@/lib/utils";
 import type { Profile } from "@/lib/types";
@@ -47,8 +36,6 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
   const [username, setUsername] = useState(initialProfile.username);
   const [bio, setBio] = useState(initialProfile.bio ?? "");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(initialProfile.avatar_url);
-  const [radius, setRadius] = useState(initialProfile.visit_radius_m);
-  const [notifications, setNotifications] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [cropFile, setCropFile] = useState<File | null>(null);
@@ -88,7 +75,6 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
         username,
         bio: bio.trim() || null,
         avatar_url: avatarUrl,
-        visit_radius_m: radius,
       }),
     });
     setSaving(false);
@@ -201,23 +187,6 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
           <CardDescription>Настройте, как приложение работает для вас.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">Радиус посещения</Label>
-              <span className="text-sm font-semibold tabular-nums">{radius} м</span>
-            </div>
-            <Slider
-              value={[radius]}
-              onValueChange={([v]) => setRadius(v ?? VISIT_RADIUS_MIN_M)}
-              min={VISIT_RADIUS_MIN_M}
-              max={VISIT_RADIUS_MAX_M}
-              step={10}
-            />
-            <p className="text-xs text-muted-foreground">
-              Чтобы засчитать визит, вы должны быть не дальше этого расстояния от метки.
-            </p>
-          </div>
-
           <AccentPicker />
 
           <div className="space-y-3">
@@ -227,17 +196,6 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
               <ThemeChoice icon={Moon} label="Тёмная" value="dark" active={theme === "dark"} onClick={setTheme} />
               <ThemeChoice icon={Monitor} label="Система" value="system" active={theme === "system" || !theme} onClick={setTheme} />
             </div>
-          </div>
-
-          <div className="flex items-center justify-between rounded-xl border p-4">
-            <div className="flex items-center gap-3">
-              <Bell className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <div className="text-sm font-medium">Уведомления</div>
-                <div className="text-xs text-muted-foreground">Скоро: оповещения о новых метках рядом</div>
-              </div>
-            </div>
-            <Switch checked={notifications} onCheckedChange={setNotifications} disabled />
           </div>
         </CardContent>
       </Card>
