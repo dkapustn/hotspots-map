@@ -9,6 +9,7 @@ export type Database = {
           bio: string | null;
           visit_radius_m: number;
           theme: string;
+          spots_visibility: "public" | "friends";
           created_at: string;
         };
         Insert: {
@@ -18,6 +19,7 @@ export type Database = {
           bio?: string | null;
           visit_radius_m?: number;
           theme?: string;
+          spots_visibility?: "public" | "friends";
           created_at?: string;
         };
         Update: {
@@ -27,8 +29,15 @@ export type Database = {
           bio?: string | null;
           visit_radius_m?: number;
           theme?: string;
+          spots_visibility?: "public" | "friends";
           created_at?: string;
         };
+        Relationships: [];
+      };
+      bookmarks: {
+        Row: { user_id: string; spot_id: string; created_at: string };
+        Insert: { user_id: string; spot_id: string; created_at?: string };
+        Update: { user_id?: string; spot_id?: string; created_at?: string };
         Relationships: [];
       };
       spots: {

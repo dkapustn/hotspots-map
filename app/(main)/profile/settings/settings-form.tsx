@@ -14,6 +14,8 @@ import {
   Save,
   Palette,
   Map as MapIcon,
+  Globe,
+  Users,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -47,6 +49,9 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
   const [bio, setBio] = useState(initialProfile.bio ?? "");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(initialProfile.avatar_url);
   const [radius, setRadius] = useState(initialProfile.visit_radius_m);
+  const [visibility, setVisibility] = useState<"public" | "friends">(
+    (initialProfile.spots_visibility as "public" | "friends") ?? "public",
+  );
   const [notifications, setNotifications] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -87,6 +92,7 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
         bio: bio.trim() || null,
         avatar_url: avatarUrl,
         visit_radius_m: radius,
+        spots_visibility: visibility,
       }),
     });
     setSaving(false);
@@ -205,6 +211,45 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
 
           <div className="space-y-3">
             <Label className="text-sm">Тема оформления</Label>
+            <div className="grid grid-cols-3 gap-2">
+              <ThemeChoice icon={Sun} label="Светлая" value="light" active={theme === "light"} onClick={setTheme} />
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <Label className="text-sm">Кто видит мои метки</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setVisibility("public")}
+                className={`flex flex-col items-center gap-1.5 rounded-xl border p-3 text-xs font-medium transition-colors ${
+                  visibility === "public"
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Globe className="h-5 w-5" />
+                Все
+              </button>
+              <button
+                type="button"
+                onClick={() => setVisibility("friends")}
+                className={`flex flex-col items-center gap-1.5 rounded-xl border p-3 text-xs font-medium transition-colors ${
+                  visibility === "friends"
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Users className="h-5 w-5" />
+                Только друзья
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              «Друзья» = подписаны друг на друга взаимно. Изменение применится ко всем вашим меткам.
+            </p>
+          </div>
+
+          <div className="hidden">
             <div className="grid grid-cols-3 gap-2">
               <ThemeChoice icon={Sun} label="Светлая" value="light" active={theme === "light"} onClick={setTheme} />
               <ThemeChoice icon={Moon} label="Тёмная" value="dark" active={theme === "dark"} onClick={setTheme} />

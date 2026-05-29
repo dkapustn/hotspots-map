@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Settings, Plus, MapPin, Footprints, Heart, Users, UserCheck } from "lucide-react";
+import { Settings, Plus, MapPin, Footprints, Heart, Users, UserCheck, Bookmark } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { attachAuthor } from "@/lib/spot-helpers";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,7 +17,7 @@ export default async function MyProfilePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { data: spots }, { data: visits }, { data: likes }] = await Promise.all([
+  const [{ data: profile }, { data: spots }, { data: visits }, { data: likes }, { data: bookmarks }] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).single(),
     supabase
       .from("spots")
@@ -34,6 +34,11 @@ export default async function MyProfilePage() {
       .select("spot_id, created_at, spots!likes_spot_id_fkey(*, profiles!spots_user_id_fkey(id, username, avatar_url))")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
+    supabase
+      .from("bookmarks")
+      .select("spot_id, created_at, spots!bookmarks_spot_id_fkey(*, profiles!spots_user_id_fkey(id, username, avatar_url))")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false }),
   ]);
 
   const mySpots = (spots ?? []).map((s) => attachAuthor(s as any));
@@ -42,6 +47,9 @@ export default async function MyProfilePage() {
     .filter(Boolean) as ReturnType<typeof attachAuthor>[];
   const liked = (likes ?? [])
     .map((l: any) => (l.spots ? attachAuthor(l.spots) : null))
+    .filter(Boolean) as ReturnType<typeof attachAuthor>[];
+  const bookmarked = (bookmarks ?? [])
+    .map((b: any) => (b.spots ? attachAuthor(b.spots) : null))
     .filter(Boolean) as ReturnType<typeof attachAuthor>[];
 
   // Считаем общее число лайков, полученных пользователем (на всех его метках).
@@ -111,9 +119,10 @@ export default async function MyProfilePage() {
 
         <Tabs defaultValue="mine" className="mt-6">
           <TabsList>
-            <TabsTrigger value="mine">Мои метки</TabsTrigger>
+            <TabsTrigger value="mine">Мои</TabsTrigger>
             <TabsTrigger value="visited">Посещённые</TabsTrigger>
-            <TabsTrigger value="liked">Лайкнутые</TabsTrigger>
+            <TabsTrigger value="liked">Лайки</TabsTrigger>
+            <TabsTrigger value="saved"><Bookmark className="h-3.5 w-3.5" />Сохранённые</TabsTrigger>
           </TabsList>
 
           <TabsContent value="mine">
@@ -137,6 +146,13 @@ export default async function MyProfilePage() {
               <EmptyState message="Лайкните понравившиеся места — они появятся здесь." />
             ) : (
               <SpotsList spots={liked} />
+            )}
+          </TabsContent>
+          <TabsContent value="saved">
+            {bookmarked.length === 0 ? (
+              <EmptyState message="Сохраняйте места, чтобы вернуться к ним позже." />
+            ) : (
+              <SpotsList spots={bookmarked} />
             )}
           </TabsContent>
         </Tabs>

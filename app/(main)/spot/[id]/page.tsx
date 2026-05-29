@@ -11,7 +11,15 @@ export default async function SpotPage({ params }: { params: { id: string } }) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [{ data: spot }, statsRes, userLikeRes, userVisitRes, userRatingRes, commentsRes] = await Promise.all([
+  const [
+    { data: spot },
+    statsRes,
+    userLikeRes,
+    userVisitRes,
+    userRatingRes,
+    userBookmarkRes,
+    commentsRes,
+  ] = await Promise.all([
     supabase
       .from("spots")
       .select("*, profiles!spots_user_id_fkey(id, username, avatar_url)")
@@ -46,6 +54,14 @@ export default async function SpotPage({ params }: { params: { id: string } }) {
           .eq("spot_id", params.id)
           .maybeSingle()
       : Promise.resolve({ data: null } as any),
+    user
+      ? supabase
+          .from("bookmarks")
+          .select("spot_id")
+          .eq("user_id", user.id)
+          .eq("spot_id", params.id)
+          .maybeSingle()
+      : Promise.resolve({ data: null } as any),
     supabase
       .from("comments")
       .select("*, profiles!comments_user_id_fkey(id, username, avatar_url)")
@@ -73,6 +89,7 @@ export default async function SpotPage({ params }: { params: { id: string } }) {
       initialLiked={!!userLikeRes.data}
       initialVisited={!!userVisitRes.data}
       initialUserRating={userRatingValue}
+      initialBookmarked={!!userBookmarkRes.data}
       initialComments={(commentsRes.data ?? []) as any}
       currentUserId={user?.id ?? null}
     />

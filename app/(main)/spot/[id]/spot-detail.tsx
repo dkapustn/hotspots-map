@@ -14,6 +14,7 @@ import { ShareButton } from "@/components/spot/ShareButton";
 import { DistanceBadge } from "@/components/spot/DistanceBadge";
 import { PhotoLightbox } from "@/components/spot/PhotoLightbox";
 import { SpotRating } from "@/components/spot/SpotRating";
+import { BookmarkButton } from "@/components/spot/BookmarkButton";
 import { formatRelativeTime, initials } from "@/lib/utils";
 import type { SpotWithAuthor } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
@@ -31,6 +32,7 @@ export function SpotDetail({
   stats,
   initialLiked,
   initialVisited,
+  initialBookmarked,
   initialUserRating,
   initialComments,
   currentUserId,
@@ -45,6 +47,7 @@ export function SpotDetail({
   };
   initialLiked: boolean;
   initialVisited: boolean;
+  initialBookmarked: boolean;
   initialUserRating: number | null;
   initialComments: CommentRow[];
   currentUserId: string | null;
@@ -55,6 +58,7 @@ export function SpotDetail({
   const [visited, setVisited] = useState(initialVisited);
   const [visitsCount, setVisitsCount] = useState(stats.visits_count);
   const [comments, setComments] = useState(initialComments);
+  const [bookmarked, setBookmarked] = useState(initialBookmarked);
   const [deleting, setDeleting] = useState(false);
 
   async function handleDelete() {
@@ -152,6 +156,13 @@ export function SpotDetail({
             }}
           />
           <ShareButton spotId={spot.id} title={spot.title} />
+          {currentUserId && (
+            <BookmarkButton
+              spotId={spot.id}
+              bookmarked={bookmarked}
+              onChange={setBookmarked}
+            />
+          )}
         </div>
 
         <DistanceBadge lat={spot.latitude} lng={spot.longitude} />
