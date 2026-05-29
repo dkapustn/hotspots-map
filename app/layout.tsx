@@ -73,7 +73,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <AccentInitializer />
           {children}
-          <Toaster position="top-center" richColors closeButton theme="system" />
+          <Toaster
+            position="top-center"
+            richColors
+            closeButton
+            expand
+            theme="system"
+            gap={10}
+            // Опускаем ниже «чёлки» (safe-area) и верхней стеклянной панели карты,
+            // иначе на iOS PWA тосты вылезают слишком высоко и их перекрывает.
+            offset="calc(env(safe-area-inset-top, 0px) + 4.75rem)"
+            toastOptions={{
+              style: {
+                borderRadius: "16px",
+                fontFamily: "var(--font-inter)",
+              },
+              className: "shadow-xl",
+            }}
+          />
         </ThemeProvider>
       </body>
     </html>

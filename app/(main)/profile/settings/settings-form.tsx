@@ -41,6 +41,7 @@ import { initials } from "@/lib/utils";
 import type { Profile } from "@/lib/types";
 import { AccentPicker } from "@/components/settings/AccentPicker";
 import { MapStylePicker } from "@/components/settings/MapStylePicker";
+import { AvatarCropper } from "@/components/settings/AvatarCropper";
 
 export function SettingsForm({ initialProfile, email }: { initialProfile: Profile; email: string }) {
   const router = useRouter();
@@ -55,6 +56,7 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
   const [notifications, setNotifications] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [cropFile, setCropFile] = useState<File | null>(null);
 
   async function handleAvatarUpload(file: File) {
     setUploadingAvatar(true);
@@ -152,10 +154,25 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={(e) => e.target.files?.[0] && handleAvatarUpload(e.target.files[0])}
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) setCropFile(f);
+                  // Сброс, чтобы повторный выбор того же файла снова сработал.
+                  e.target.value = "";
+                }}
               />
             </label>
           </div>
+
+          <AvatarCropper
+            file={cropFile}
+            open={!!cropFile}
+            onCancel={() => setCropFile(null)}
+            onCropped={(cropped) => {
+              setCropFile(null);
+              handleAvatarUpload(cropped);
+            }}
+          />
 
           <div className="space-y-2">
             <Label htmlFor="username">Имя пользователя</Label>
