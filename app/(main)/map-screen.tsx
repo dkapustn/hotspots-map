@@ -166,7 +166,7 @@ export function MapScreen({
       {spots.length === 0 && (
         <div className="pointer-events-none absolute inset-x-0 top-1/2 z-20 flex -translate-y-1/2 justify-center px-4">
           <div className="pointer-events-auto glass-strong glass-shine max-w-sm rounded-3xl p-6 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-orange-500 text-white shadow-lg shadow-primary/30">
+            <div className="animate-float mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-orange-500 text-white shadow-lg shadow-primary/30">
               <MapPin className="h-7 w-7" />
             </div>
             <h3 className="mt-4 text-lg font-semibold">Здесь пока пусто</h3>

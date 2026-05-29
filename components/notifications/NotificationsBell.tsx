@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { Bell, Heart, MessageCircle, Footprints, UserPlus } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -89,11 +90,20 @@ export function NotificationsBell({ userId }: { userId: string }) {
         aria-label="Уведомления"
       >
         <Bell className="h-4 w-4" />
-        {count > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground ring-2 ring-background">
-            {count > 99 ? "99+" : count}
-          </span>
-        )}
+        <AnimatePresence>
+          {count > 0 && (
+            <motion.span
+              key={count}
+              initial={{ scale: 0.3, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.3, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 500, damping: 20 }}
+              className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground ring-2 ring-background"
+            >
+              {count > 99 ? "99+" : count}
+            </motion.span>
+          )}
+        </AnimatePresence>
       </button>
 
       <Sheet open={open} onOpenChange={setOpen}>
@@ -108,7 +118,7 @@ export function NotificationsBell({ userId }: { userId: string }) {
               </div>
             ) : items.length === 0 ? (
               <div className="flex flex-col items-center gap-2 py-12 text-center text-muted-foreground">
-                <Bell className="h-8 w-8 opacity-40" />
+                <Bell className="animate-float h-8 w-8 opacity-40" />
                 <p className="text-sm">Пока нет уведомлений.</p>
               </div>
             ) : (

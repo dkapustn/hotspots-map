@@ -215,7 +215,7 @@ function StatCard({
     sky: "text-sky-500 bg-sky-500/10",
   }[tone];
   return (
-    <div className="rounded-xl border bg-card p-3 text-center">
+    <div className="rounded-xl border bg-card p-3 text-center transition-colors hover:border-primary/30">
       <div className={`mx-auto mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg ${colors}`}>
         <Icon className="h-4 w-4" />
       </div>
