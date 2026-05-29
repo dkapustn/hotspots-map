@@ -30,6 +30,10 @@ export function NotificationsBell({ userId }: { userId: string }) {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<NotifRow[]>([]);
   const [loading, setLoading] = useState(false);
+  // Уникальное имя канала на каждый экземпляр: на карте колокольчик
+  // рендерится дважды (мобильный + десктопный), и одинаковое имя канала
+  // вызывало ошибку "cannot add postgres_changes callbacks after subscribe()".
+  const [channelId] = useState(() => Math.random().toString(36).slice(2));
 
   // Начальный счётчик непрочитанных + realtime-подписка.
   useEffect(() => {
@@ -45,7 +49,7 @@ export function NotificationsBell({ userId }: { userId: string }) {
     })();
 
     const channel = supabase
-      .channel("notifications-realtime")
+      .channel(`notifications:${userId}:${channelId}`)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${userId}` },
@@ -57,7 +61,7 @@ export function NotificationsBell({ userId }: { userId: string }) {
       active = false;
       supabase.removeChannel(channel);
     };
-  }, [userId]);
+  }, [userId, channelId]);
 
   const handleOpen = useCallback(async () => {
     setOpen(true);
