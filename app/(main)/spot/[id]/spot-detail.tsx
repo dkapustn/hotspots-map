@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Heart, Footprints, MessageCircle, Trash2, MapPin } from "lucide-react";
+import { ArrowLeft, Heart, Footprints, MessageCircle, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import { DistanceBadge } from "@/components/spot/DistanceBadge";
 import { PhotoLightbox } from "@/components/spot/PhotoLightbox";
 import { SpotRating } from "@/components/spot/SpotRating";
 import { BookmarkButton } from "@/components/spot/BookmarkButton";
+import { RouteButton } from "@/components/spot/RouteButton";
 import { formatRelativeTime, initials } from "@/lib/utils";
 import type { SpotWithAuthor } from "@/lib/types";
 import { createClient } from "@/lib/supabase/client";
@@ -199,10 +200,11 @@ export function SpotDetail({
           />
         )}
 
-        <div className="flex items-center gap-2 rounded-xl border bg-card p-3 text-xs text-muted-foreground">
-          <MapPin className="h-4 w-4 text-primary" />
-          {spot.latitude.toFixed(5)}, {spot.longitude.toFixed(5)}
-        </div>
+        <RouteButton
+          lat={spot.latitude}
+          lng={spot.longitude}
+          label={`${spot.latitude.toFixed(5)}, ${spot.longitude.toFixed(5)}`}
+        />
 
         {/* Comments */}
         <div>
