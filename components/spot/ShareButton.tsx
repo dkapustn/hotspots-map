@@ -4,8 +4,17 @@ import { Share2, Check } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { vibrate } from "@/lib/photo";
+import { cn } from "@/lib/utils";
 
-export function ShareButton({ spotId, title }: { spotId: string; title: string }) {
+export function ShareButton({
+  spotId,
+  title,
+  className,
+}: {
+  spotId: string;
+  title: string;
+  className?: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   async function handleShare() {
@@ -29,7 +38,14 @@ export function ShareButton({ spotId, title }: { spotId: string; title: string }
   }
 
   return (
-    <Button type="button" size="lg" variant="outline" onClick={handleShare} aria-label="Поделиться">
+    <Button
+      type="button"
+      size="lg"
+      variant="outline"
+      onClick={handleShare}
+      aria-label="Поделиться"
+      className={cn(className)}
+    >
       {copied ? <Check className="h-5 w-5 text-emerald-500" /> : <Share2 className="h-5 w-5" />}
     </Button>
   );

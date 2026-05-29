@@ -11,10 +11,12 @@ export function LikeButton({
   spotId,
   liked,
   onChange,
+  className,
 }: {
   spotId: string;
   liked: boolean;
   onChange: (v: boolean) => void;
+  className?: string;
 }) {
   const [pending, setPending] = useState(false);
 
@@ -39,7 +41,11 @@ export function LikeButton({
       onClick={handle}
       disabled={pending}
       aria-pressed={liked}
-      className={cn(liked && "border-rose-300 bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/40 dark:border-rose-900 dark:text-rose-400")}
+      className={cn(
+        liked &&
+          "border-rose-300 bg-rose-50 text-rose-600 hover:bg-rose-100 dark:bg-rose-950/40 dark:border-rose-900 dark:text-rose-400",
+        className,
+      )}
     >
       <AnimatePresence mode="wait">
         <motion.span

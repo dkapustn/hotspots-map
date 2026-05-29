@@ -136,8 +136,8 @@ export function SpotDetail({
       </div>
 
       <div className="mx-auto max-w-2xl px-4 py-6 md:px-8 space-y-6">
-        {/* Action bar */}
-        <div className="flex flex-wrap items-center gap-3">
+        {/* Action bar — всё в один ряд: гибкая «Посетить» + квадратные иконки */}
+        <div className="flex items-stretch gap-2">
           <VisitButton
             spotId={spot.id}
             visited={visited}
@@ -145,7 +145,7 @@ export function SpotDetail({
               if (!visited) setVisitsCount((c) => c + 1);
               setVisited(true);
             }}
-            className="flex-1 min-w-[160px]"
+            className="h-12 flex-1 min-w-0 px-4 text-sm"
           />
           <LikeButton
             spotId={spot.id}
@@ -154,13 +154,19 @@ export function SpotDetail({
               setLiked(v);
               setLikesCount((c) => c + (v ? 1 : -1));
             }}
+            className="h-12 w-12 shrink-0 px-0"
           />
-          <ShareButton spotId={spot.id} title={spot.title} />
+          <ShareButton
+            spotId={spot.id}
+            title={spot.title}
+            className="h-12 w-12 shrink-0 px-0"
+          />
           {currentUserId && (
             <BookmarkButton
               spotId={spot.id}
               bookmarked={bookmarked}
               onChange={setBookmarked}
+              className="h-12 w-12 shrink-0 px-0"
             />
           )}
         </div>

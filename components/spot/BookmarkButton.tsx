@@ -11,10 +11,12 @@ export function BookmarkButton({
   spotId,
   bookmarked,
   onChange,
+  className,
 }: {
   spotId: string;
   bookmarked: boolean;
   onChange: (v: boolean) => void;
+  className?: string;
 }) {
   const [pending, setPending] = useState(false);
 
@@ -47,6 +49,7 @@ export function BookmarkButton({
       className={cn(
         bookmarked &&
           "border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-950/40 dark:border-amber-900 dark:text-amber-300",
+        className,
       )}
     >
       <AnimatePresence mode="wait">

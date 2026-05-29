@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { MapClient } from "@/components/map/MapClient";
-import { SpotBottomSheet } from "@/components/spot/SpotBottomSheet";
 import type { SpotWithAuthor } from "@/lib/types";
 import { MapPin, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
@@ -13,8 +13,8 @@ import { attachAuthor } from "@/lib/spot-helpers";
 import { toast } from "sonner";
 
 export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) {
+  const router = useRouter();
   const [spots, setSpots] = useState(initialSpots);
-  const [selected, setSelected] = useState<SpotWithAuthor | null>(null);
   const [query, setQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -39,7 +39,7 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
           setSpots((prev) => (prev.some((s) => s.id === newSpot.id) ? prev : [newSpot, ...prev]));
           toast.message("Новое место рядом", {
             description: newSpot.title,
-            action: { label: "Открыть", onClick: () => setSelected(newSpot) },
+            action: { label: "Открыть", onClick: () => router.push(`/spot/${newSpot.id}`) },
           });
         },
       )
@@ -49,7 +49,6 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
         (payload) => {
           const id = (payload.old as { id: string }).id;
           setSpots((prev) => prev.filter((s) => s.id !== id));
-          setSelected((cur) => (cur?.id === id ? null : cur));
         },
       )
       .subscribe();
@@ -57,12 +56,13 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [router]);
 
-  const handleClick = useCallback((spot: SpotWithAuthor) => setSelected(spot), []);
-  const handleClose = useCallback(() => setSelected(null), []);
-  // Передаём в MapView последнюю выбранную метку — он плавно к ней пролетит.
-  const flyTarget = selected;
+  // Клик по метке — сразу открываем её страницу (без промежуточного попапа).
+  const handleClick = useCallback(
+    (spot: SpotWithAuthor) => router.push(`/spot/${spot.id}`),
+    [router],
+  );
 
   const filtered = query.trim()
     ? spots.filter((s) =>
@@ -140,7 +140,7 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
         </div>
       </div>
 
-      <MapClient spots={filtered} onSpotClick={handleClick} flyToSpot={flyTarget} />
+      <MapClient spots={filtered} onSpotClick={handleClick} />
 
       {/* Empty hint */}
       {spots.length === 0 && (
@@ -170,8 +170,6 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
           </div>
         </div>
       )}
-
-      <SpotBottomSheet spot={selected} open={!!selected} onClose={handleClose} />
     </div>
   );
 }
