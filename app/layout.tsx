@@ -76,14 +76,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Toaster
             position="bottom-center"
             richColors
-            closeButton
             expand
             theme="system"
             gap={10}
-            // Снизу нет «чёлки». Точный отступ над нижней панелью задаётся
-            // в globals.css через env() в обычном стайлшите (env() в
-            // inline-style на iOS PWA не вычисляется — см. CLAUDE.md).
+            // Без крестика и без ручного закрытия — тосты исчезают сами.
+            // Отступ над нижней панелью задаётся в globals.css через env()
+            // (env() в inline-style на iOS PWA не вычисляется — см. CLAUDE.md).
             toastOptions={{
+              dismissible: false,
               style: {
                 borderRadius: "16px",
                 fontFamily: "var(--font-inter)",

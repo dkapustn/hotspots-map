@@ -83,46 +83,49 @@ export function MapScreen({
       <Onboarding />
 
       {/* Top bar (mobile) — Liquid Glass pills */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 px-3 pt-[calc(env(safe-area-inset-top,0px)+0.625rem)] pb-2 md:hidden">
-        <div className="pointer-events-auto flex items-center gap-2">
-          <div className="glass-strong glass-shine flex items-center gap-2 rounded-full px-3.5 py-1.5">
-            <MapPin className="h-4 w-4 text-primary" />
-            <span className="text-sm font-semibold">{APP_NAME}</span>
-          </div>
-          {userId && <NotificationsBell userId={userId} />}
-        </div>
-        <div className="pointer-events-auto">
-          {searchOpen ? (
-            <div className="glass-strong glass-shine flex items-center gap-1 rounded-full pl-3.5 pr-1 py-1 w-[62vw] max-w-[280px]">
-              <Search className="h-4 w-4 text-muted-foreground shrink-0" />
-              <input
-                autoFocus
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Поиск меток..."
-                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground min-w-0"
-              />
-              <button
-                onClick={() => {
-                  setSearchOpen(false);
-                  setQuery("");
-                }}
-                className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-foreground/10 shrink-0"
-                aria-label="Закрыть"
-              >
-                <X className="h-4 w-4" />
-              </button>
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-center gap-2 px-3 pt-[calc(env(safe-area-inset-top,0px)+0.625rem)] pb-2 md:hidden">
+        {/* Левая группа скрывается, когда открыт поиск — чтобы он раскрылся
+            на всю ширину и ничего не «съезжало». */}
+        {!searchOpen && (
+          <div className="pointer-events-auto flex items-center gap-2">
+            <div className="glass-strong glass-shine flex h-10 items-center gap-2 rounded-full px-3.5">
+              <MapPin className="h-4 w-4 text-primary" />
+              <span className="text-sm font-semibold">{APP_NAME}</span>
             </div>
-          ) : (
+            {userId && <NotificationsBell userId={userId} />}
+          </div>
+        )}
+
+        {searchOpen ? (
+          <div className="pointer-events-auto glass-strong glass-shine flex h-10 flex-1 items-center gap-1 rounded-full pl-3.5 pr-1">
+            <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+            <input
+              autoFocus
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Поиск меток..."
+              className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+            />
             <button
-              onClick={() => setSearchOpen(true)}
-              className="glass-strong glass-shine flex h-10 w-10 items-center justify-center rounded-full"
-              aria-label="Поиск"
+              onClick={() => {
+                setSearchOpen(false);
+                setQuery("");
+              }}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full hover:bg-foreground/10"
+              aria-label="Закрыть поиск"
             >
-              <Search className="h-4 w-4" />
+              <X className="h-4 w-4" />
             </button>
-          )}
-        </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="glass-strong glass-shine pointer-events-auto ml-auto flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+            aria-label="Поиск"
+          >
+            <Search className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {/* Desktop search — glass pill */}

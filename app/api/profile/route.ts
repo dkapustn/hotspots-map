@@ -20,7 +20,7 @@ const PatchSchema = z.object({
   avatar_url: z.string().url().nullable().optional(),
   visit_radius_m: z.number().int().min(VISIT_RADIUS_MIN_M).max(VISIT_RADIUS_MAX_M).optional(),
   theme: z.enum(["light", "dark", "system"]).optional(),
-  spots_visibility: z.enum(["public", "friends"]).optional(),
+  spots_visibility: z.enum(["public", "friends", "private"]).optional(),
 });
 
 export async function PATCH(request: NextRequest) {
