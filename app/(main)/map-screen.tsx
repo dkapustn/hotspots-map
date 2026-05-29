@@ -8,11 +8,18 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { APP_NAME } from "@/lib/constants";
 import { Onboarding } from "@/components/onboarding/Onboarding";
+import { NotificationsBell } from "@/components/notifications/NotificationsBell";
 import { createClient } from "@/lib/supabase/client";
 import { attachAuthor } from "@/lib/spot-helpers";
 import { toast } from "sonner";
 
-export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) {
+export function MapScreen({
+  initialSpots,
+  userId,
+}: {
+  initialSpots: SpotWithAuthor[];
+  userId: string | null;
+}) {
   const router = useRouter();
   const [spots, setSpots] = useState(initialSpots);
   const [query, setQuery] = useState("");
@@ -77,9 +84,12 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
 
       {/* Top bar (mobile) — Liquid Glass pills */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-start justify-between gap-2 px-3 pt-[calc(env(safe-area-inset-top,0px)+0.625rem)] pb-2 md:hidden">
-        <div className="pointer-events-auto glass-strong glass-shine flex items-center gap-2 rounded-full px-3.5 py-1.5">
-          <MapPin className="h-4 w-4 text-primary" />
-          <span className="text-sm font-semibold">{APP_NAME}</span>
+        <div className="pointer-events-auto flex items-center gap-2">
+          <div className="glass-strong glass-shine flex items-center gap-2 rounded-full px-3.5 py-1.5">
+            <MapPin className="h-4 w-4 text-primary" />
+            <span className="text-sm font-semibold">{APP_NAME}</span>
+          </div>
+          {userId && <NotificationsBell userId={userId} />}
         </div>
         <div className="pointer-events-auto">
           {searchOpen ? (
@@ -139,6 +149,13 @@ export function MapScreen({ initialSpots }: { initialSpots: SpotWithAuthor[] }) 
           </div>
         </div>
       </div>
+
+      {/* Desktop notifications bell — top-right */}
+      {userId && (
+        <div className="pointer-events-auto absolute right-4 top-4 z-30 hidden md:block">
+          <NotificationsBell userId={userId} />
+        </div>
+      )}
 
       <MapClient spots={filtered} onSpotClick={handleClick} />
 

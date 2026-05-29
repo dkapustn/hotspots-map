@@ -178,6 +178,30 @@ export type Database = {
         };
         Relationships: [];
       };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          actor_id: string;
+          type: "like" | "comment" | "visit" | "follow";
+          spot_id: string | null;
+          read: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          actor_id: string;
+          type: "like" | "comment" | "visit" | "follow";
+          spot_id?: string | null;
+          read?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          read?: boolean;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       spot_stats: {
@@ -211,6 +235,7 @@ export type Visit = Database["public"]["Tables"]["visits"]["Row"];
 export type Like = Database["public"]["Tables"]["likes"]["Row"];
 export type Comment = Database["public"]["Tables"]["comments"]["Row"];
 export type SpotStats = Database["public"]["Views"]["spot_stats"]["Row"];
+export type Notification = Database["public"]["Tables"]["notifications"]["Row"];
 
 export type SpotWithAuthor = Spot & {
   author: Pick<Profile, "id" | "username" | "avatar_url"> | null;
