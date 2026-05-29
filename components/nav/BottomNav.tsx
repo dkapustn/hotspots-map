@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 const TABS = [
   { href: "/", label: "Карта", icon: Map, match: (p: string) => p === "/" },
-  { href: "/top", label: "Топ", icon: Trophy, match: (p: string) => p.startsWith("/top") },
+  { href: "/top", label: "Рейтинг", icon: Trophy, match: (p: string) => p.startsWith("/top") },
   {
     href: "/create",
     label: "Создать",

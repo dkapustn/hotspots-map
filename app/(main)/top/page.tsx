@@ -5,16 +5,20 @@ import { attachAuthor } from "@/lib/spot-helpers";
 import { TopSearch } from "./top-search";
 import type { SpotStatsWithAuthor } from "@/lib/types";
 
-export const metadata: Metadata = { title: "Топ мест" };
+export const metadata: Metadata = { title: "Рейтинг" };
 export const dynamic = "force-dynamic";
 
-async function fetchSpots(orderBy: "likes_count" | "visits_count" | "created_at") {
+async function fetchSpots(
+  orderBy: "avg_rating" | "likes_count" | "visits_count" | "created_at",
+) {
   const supabase = createClient();
-  const { data: stats } = await supabase
-    .from("spot_stats")
-    .select("*")
-    .order(orderBy, { ascending: false })
-    .limit(30);
+  let q = supabase.from("spot_stats").select("*").order(orderBy, { ascending: false });
+  // При сортировке по среднему рейтингу при равенстве выше ставим тех,
+  // у кого больше оценок (надёжнее одной случайной пятёрки).
+  if (orderBy === "avg_rating") {
+    q = q.order("ratings_count", { ascending: false });
+  }
+  const { data: stats } = await q.limit(30);
 
   if (!stats || stats.length === 0) return [] as SpotStatsWithAuthor[];
 
@@ -34,7 +38,8 @@ async function fetchSpots(orderBy: "likes_count" | "visits_count" | "created_at"
 }
 
 export default async function TopPage() {
-  const [byLikes, byVisits, recent] = await Promise.all([
+  const [byRating, byLikes, byVisits, recent] = await Promise.all([
+    fetchSpots("avg_rating"),
     fetchSpots("likes_count"),
     fetchSpots("visits_count"),
     fetchSpots("created_at"),
@@ -44,16 +49,16 @@ export default async function TopPage() {
     <div className="h-full scroll-area pb-safe-nav">
       <div className="mx-auto max-w-3xl px-4 md:px-8 pt-safe-content">
         <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-orange-500/30">
-            <Trophy className="h-6 w-6 text-white" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/70 shadow-lg shadow-primary/30">
+            <Trophy className="h-6 w-6 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold md:text-3xl">Топ мест</h1>
-            <p className="text-sm text-muted-foreground">Самые любимые и посещаемые места.</p>
+            <h1 className="text-2xl font-bold md:text-3xl">Рейтинг</h1>
+            <p className="text-sm text-muted-foreground">Лучшие места по оценкам сообщества.</p>
           </div>
         </div>
 
-        <TopSearch byLikes={byLikes} byVisits={byVisits} recent={recent} />
+        <TopSearch byRating={byRating} byLikes={byLikes} byVisits={byVisits} recent={recent} />
       </div>
     </div>
   );

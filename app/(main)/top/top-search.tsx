@@ -1,17 +1,19 @@
 "use client";
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { Heart, Footprints, MessageCircle, Sparkles, Search, X } from "lucide-react";
+import { Heart, Footprints, MessageCircle, Sparkles, Star, Search, X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { initials, formatRelativeTime } from "@/lib/utils";
 import type { SpotStatsWithAuthor } from "@/lib/types";
 
 export function TopSearch({
+  byRating,
   byLikes,
   byVisits,
   recent,
 }: {
+  byRating: SpotStatsWithAuthor[];
   byLikes: SpotStatsWithAuthor[];
   byVisits: SpotStatsWithAuthor[];
   recent: SpotStatsWithAuthor[];
@@ -31,6 +33,7 @@ export function TopSearch({
     [query],
   );
 
+  const filteredRating = useMemo(() => filterSpots(byRating), [byRating, filterSpots]);
   const filteredLikes = useMemo(() => filterSpots(byLikes), [byLikes, filterSpots]);
   const filteredVisits = useMemo(() => filterSpots(byVisits), [byVisits, filterSpots]);
   const filteredRecent = useMemo(() => filterSpots(recent), [recent, filterSpots]);
@@ -56,12 +59,16 @@ export function TopSearch({
         )}
       </div>
 
-      <Tabs defaultValue="likes" className="mt-4">
+      <Tabs defaultValue="rating" className="mt-4">
         <TabsList>
+          <TabsTrigger value="rating"><Star className="h-4 w-4" />Рейтинг</TabsTrigger>
           <TabsTrigger value="likes"><Heart className="h-4 w-4" />Лайки</TabsTrigger>
           <TabsTrigger value="visits"><Footprints className="h-4 w-4" />Визиты</TabsTrigger>
           <TabsTrigger value="new"><Sparkles className="h-4 w-4" />Новые</TabsTrigger>
         </TabsList>
+        <TabsContent value="rating">
+          <SpotsGrid spots={filteredRating} showRank />
+        </TabsContent>
         <TabsContent value="likes">
           <SpotsGrid spots={filteredLikes} showRank />
         </TabsContent>
@@ -101,7 +108,7 @@ function SpotsGrid({ spots, showRank }: { spots: SpotStatsWithAuthor[]; showRank
             />
           </div>
           {showRank && idx < 3 && (
-            <span className="absolute left-3 top-3 inline-flex h-7 items-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 px-3 text-xs font-bold text-white shadow-lg">
+            <span className="absolute left-3 top-3 inline-flex h-7 items-center rounded-full bg-gradient-to-br from-primary to-primary/70 px-3 text-xs font-bold text-primary-foreground shadow-lg">
               #{idx + 1}
             </span>
           )}
@@ -117,6 +124,11 @@ function SpotsGrid({ spots, showRank }: { spots: SpotStatsWithAuthor[]; showRank
               <span>{formatRelativeTime(s.created_at)}</span>
             </div>
             <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+              {s.ratings_count > 0 && (
+                <span className="inline-flex items-center gap-1 font-medium text-amber-500">
+                  <Star className="h-3.5 w-3.5 fill-amber-500" /> {Number(s.avg_rating).toFixed(1)}
+                </span>
+              )}
               <span className="inline-flex items-center gap-1"><Heart className="h-3.5 w-3.5" /> {s.likes_count}</span>
               <span className="inline-flex items-center gap-1"><Footprints className="h-3.5 w-3.5" /> {s.visits_count}</span>
               <span className="inline-flex items-center gap-1"><MessageCircle className="h-3.5 w-3.5" /> {s.comments_count}</span>
