@@ -14,9 +14,6 @@ import {
   Save,
   Palette,
   Map as MapIcon,
-  Globe,
-  Users,
-  Lock,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -51,9 +48,6 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
   const [bio, setBio] = useState(initialProfile.bio ?? "");
   const [avatarUrl, setAvatarUrl] = useState<string | null>(initialProfile.avatar_url);
   const [radius, setRadius] = useState(initialProfile.visit_radius_m);
-  const [visibility, setVisibility] = useState<"public" | "friends" | "private">(
-    (initialProfile.spots_visibility as "public" | "friends" | "private") ?? "public",
-  );
   const [notifications, setNotifications] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
@@ -95,7 +89,6 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
         bio: bio.trim() || null,
         avatar_url: avatarUrl,
         visit_radius_m: radius,
-        spots_visibility: visibility,
       }),
     });
     setSaving(false);
@@ -236,34 +229,6 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
             </div>
           </div>
 
-          <div className="space-y-3">
-            <Label className="text-sm">Кто видит мои метки</Label>
-            <div className="grid grid-cols-3 gap-2">
-              <VisibilityChoice
-                icon={Globe}
-                label="Все"
-                active={visibility === "public"}
-                onClick={() => setVisibility("public")}
-              />
-              <VisibilityChoice
-                icon={Users}
-                label="Друзья"
-                active={visibility === "friends"}
-                onClick={() => setVisibility("friends")}
-              />
-              <VisibilityChoice
-                icon={Lock}
-                label="Только я"
-                active={visibility === "private"}
-                onClick={() => setVisibility("private")}
-              />
-            </div>
-            <p className="text-xs text-muted-foreground">
-              «Друзья» = подписаны друг на друга взаимно. «Только я» — метки видны
-              лишь вам. Изменение применится ко всем вашим меткам.
-            </p>
-          </div>
-
           <div className="flex items-center justify-between rounded-xl border p-4">
             <div className="flex items-center gap-3">
               <Bell className="h-5 w-5 text-muted-foreground" />
@@ -362,27 +327,3 @@ function ThemeChoice({
   );
 }
 
-function VisibilityChoice({
-  icon: Icon,
-  label,
-  active,
-  onClick,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`flex flex-col items-center gap-1.5 rounded-xl border p-3 text-xs font-medium transition-colors ${
-        active ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:text-foreground"
-      }`}
-    >
-      <Icon className="h-5 w-5" />
-      {label}
-    </button>
-  );
-}

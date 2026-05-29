@@ -1,10 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Heart, Footprints, MessageCircle, Trash2 } from "lucide-react";
+import { ArrowLeft, Heart, Footprints, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { VisitButton } from "@/components/spot/VisitButton";
@@ -16,9 +14,9 @@ import { PhotoLightbox } from "@/components/spot/PhotoLightbox";
 import { SpotRating } from "@/components/spot/SpotRating";
 import { BookmarkButton } from "@/components/spot/BookmarkButton";
 import { RouteButton } from "@/components/spot/RouteButton";
+import { SpotOwnerMenu } from "@/components/spot/SpotOwnerMenu";
 import { formatRelativeTime, initials } from "@/lib/utils";
 import type { SpotWithAuthor } from "@/lib/types";
-import { createClient } from "@/lib/supabase/client";
 
 interface CommentRow {
   id: string;
@@ -53,28 +51,12 @@ export function SpotDetail({
   initialComments: CommentRow[];
   currentUserId: string | null;
 }) {
-  const router = useRouter();
   const [liked, setLiked] = useState(initialLiked);
   const [likesCount, setLikesCount] = useState(stats.likes_count);
   const [visited, setVisited] = useState(initialVisited);
   const [visitsCount, setVisitsCount] = useState(stats.visits_count);
   const [comments, setComments] = useState(initialComments);
   const [bookmarked, setBookmarked] = useState(initialBookmarked);
-  const [deleting, setDeleting] = useState(false);
-
-  async function handleDelete() {
-    if (!confirm("Удалить эту метку?")) return;
-    setDeleting(true);
-    const res = await fetch(`/api/spots/${spot.id}`, { method: "DELETE" });
-    setDeleting(false);
-    if (!res.ok) {
-      toast.error("Не удалось удалить метку");
-      return;
-    }
-    toast.success("Метка удалена");
-    router.replace("/");
-    router.refresh();
-  }
 
   const isOwner = currentUserId === spot.user_id;
 
@@ -98,14 +80,7 @@ export function SpotDetail({
         </Link>
 
         {isOwner && (
-          <button
-            onClick={handleDelete}
-            disabled={deleting}
-            className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-destructive disabled:opacity-50 mt-safe"
-            aria-label="Удалить метку"
-          >
-            <Trash2 className="h-5 w-5" />
-          </button>
+          <SpotOwnerMenu spotId={spot.id} initialVisibility={spot.visibility} />
         )}
 
         {/* Title overlay */}

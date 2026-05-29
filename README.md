@@ -31,8 +31,9 @@ npm install
 7. Запусти пятый файл — [`supabase/migrations/0005_bookmarks_visibility.sql`](./supabase/migrations/0005_bookmarks_visibility.sql) — таблица `bookmarks` (приватные закладки) + колонка `spots_visibility` в `profiles` (public/friends) и пересборка политики чтения меток с учётом видимости. **Без этой миграции кнопка «Сохранить в закладки» падает с ошибкой.**
 8. Запусти шестой файл — [`supabase/migrations/0006_avatar_storage_fix.sql`](./supabase/migrations/0006_avatar_storage_fix.sql) — восстанавливает бакет `avatars` и его политики доступа. **Без этой миграции загрузка аватара падает с ошибкой `new row violates row-level security policy`.** Скрипт идемпотентный — безопасно запускать, даже если что-то уже создано.
 9. Запусти седьмой файл — [`supabase/migrations/0007_notifications.sql`](./supabase/migrations/0007_notifications.sql) — таблица `notifications` + триггеры (лайк/коммент/визит/подписка создают уведомление автоматически) + realtime. **Без этой миграции колокольчик уведомлений на карте будет пустым.**
-10. Запусти восьмой файл — [`supabase/migrations/0008_private_visibility.sql`](./supabase/migrations/0008_private_visibility.sql) — добавляет уровень видимости `private` («Только я») и пересобирает политику чтения меток. **Без этой миграции выбор «Только я» в настройках упадёт с ошибкой.**
-11. (Опционально) Включи гостевой вход: **Authentication → Sign In / Up → Anonymous Sign-Ins** → переключи в **Allow**. После этого на странице входа появится рабочая кнопка «Войти как гость».
+10. Запусти восьмой файл — [`supabase/migrations/0008_private_visibility.sql`](./supabase/migrations/0008_private_visibility.sql) — добавляет уровень видимости `private` («Только я») и пересобирает политику чтения меток.
+11. Запусти девятый файл — [`supabase/migrations/0009_per_spot_visibility.sql`](./supabase/migrations/0009_per_spot_visibility.sql) — переносит видимость с профиля на **каждую метку** (колонка `spots.visibility`), пересобирает политику чтения и включает `security_invoker` у view `spot_stats` (чтобы непубличные метки не утекали в Рейтинг). **Без этой миграции меню «три точки» в метке упадёт с ошибкой.**
+12. (Опционально) Включи гостевой вход: **Authentication → Sign In / Up → Anonymous Sign-Ins** → переключи в **Allow**. После этого на странице входа появится рабочая кнопка «Войти как гость».
 
 ### 4. Скопируйте API ключи
 

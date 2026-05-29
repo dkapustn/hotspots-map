@@ -49,6 +49,7 @@ export type Database = {
           latitude: number;
           longitude: number;
           photo_path: string;
+          visibility: "public" | "friends" | "private";
           created_at: string;
         };
         Insert: {
@@ -59,6 +60,7 @@ export type Database = {
           latitude: number;
           longitude: number;
           photo_path: string;
+          visibility?: "public" | "friends" | "private";
           created_at?: string;
         };
         Update: {
@@ -69,6 +71,7 @@ export type Database = {
           latitude?: number;
           longitude?: number;
           photo_path?: string;
+          visibility?: "public" | "friends" | "private";
           created_at?: string;
         };
         Relationships: [];
