@@ -71,7 +71,7 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
       const path = `${user.id}/avatar-${Date.now()}.jpg`;
       const { error: uploadErr } = await supabase.storage
         .from(AVATARS_BUCKET)
-        .upload(path, compressed, { contentType: "image/jpeg", upsert: true });
+        .upload(path, compressed, { contentType: "image/jpeg", upsert: false });
       if (uploadErr) throw uploadErr;
 
       const { data } = supabase.storage.from(AVATARS_BUCKET).getPublicUrl(path);

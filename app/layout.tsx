@@ -74,15 +74,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <AccentInitializer />
           {children}
           <Toaster
-            position="top-center"
+            position="bottom-center"
             richColors
             closeButton
             expand
             theme="system"
             gap={10}
-            // ВАЖНО: реальный отступ сверху задаётся в globals.css через env()
-            // в обычном стайлшите. env() в inline-style (а sonner кладёт offset
-            // именно туда) на iOS PWA НЕ вычисляется — см. CLAUDE.md.
+            // Снизу нет «чёлки». Точный отступ над нижней панелью задаётся
+            // в globals.css через env() в обычном стайлшите (env() в
+            // inline-style на iOS PWA не вычисляется — см. CLAUDE.md).
             toastOptions={{
               style: {
                 borderRadius: "16px",
