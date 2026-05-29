@@ -1,12 +1,15 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Settings, Plus, MapPin, Footprints, Heart, Users, UserCheck, Bookmark } from "lucide-react";
+import { Pencil, Plus, Bookmark, MapPin, Footprints, Heart } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { attachAuthor } from "@/lib/spot-helpers";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { initials, formatRelativeTime } from "@/lib/utils";
+import { ProfileStats } from "@/components/profile/ProfileStats";
+import { ShareProfileButton } from "@/components/profile/ShareProfileButton";
+import { SpotCardGrid } from "@/components/profile/SpotCardGrid";
+import { initials } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -52,7 +55,7 @@ export default async function MyProfilePage() {
     .map((b: any) => (b.spots ? attachAuthor(b.spots) : null))
     .filter(Boolean) as ReturnType<typeof attachAuthor>[];
 
-  // Считаем общее число лайков, полученных пользователем (на всех его метках).
+  // Общее число лайков, полученных на всех метках пользователя.
   let likesReceived = 0;
   if (mySpots.length > 0) {
     const { count } = await supabase
@@ -62,16 +65,9 @@ export default async function MyProfilePage() {
     likesReceived = count ?? 0;
   }
 
-  // Подписчики, подписки, друзья (взаимные)
   const [followersCountRes, followingCountRes, friendsRes] = await Promise.all([
-    supabase
-      .from("follows")
-      .select("*", { count: "exact", head: true })
-      .eq("followee_id", user.id),
-    supabase
-      .from("follows")
-      .select("*", { count: "exact", head: true })
-      .eq("follower_id", user.id),
+    supabase.from("follows").select("*", { count: "exact", head: true }).eq("followee_id", user.id),
+    supabase.from("follows").select("*", { count: "exact", head: true }).eq("follower_id", user.id),
     supabase.from("friendships").select("user1_id, user2_id"),
   ]);
   const followersCount = followersCountRes.count ?? 0;
@@ -82,46 +78,51 @@ export default async function MyProfilePage() {
 
   return (
     <div className="h-full scroll-area pb-safe-nav">
-      <div className="mx-auto max-w-3xl px-4 md:px-8 pt-safe-content">
-        {/* Header card */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/15 via-background to-orange-500/10 border p-6">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-20 w-20 ring-4 ring-background shadow-xl">
+      <div className="mx-auto max-w-2xl px-4 md:px-8 pt-safe-content">
+        {/* ── Centered header ── */}
+        <div className="relative overflow-hidden rounded-3xl border bg-gradient-to-b from-primary/10 to-card p-6">
+          <div className="flex flex-col items-center text-center">
+            <Avatar className="h-24 w-24 ring-4 ring-background shadow-xl">
               {profile?.avatar_url ? <AvatarImage src={profile.avatar_url} alt="" /> : null}
-              <AvatarFallback className="text-xl">{initials(profile?.username)}</AvatarFallback>
+              <AvatarFallback className="text-2xl">{initials(profile?.username)}</AvatarFallback>
             </Avatar>
-            <div className="min-w-0 flex-1">
-              <h1 className="truncate text-2xl font-bold">{profile?.username ?? "—"}</h1>
-              {profile?.bio ? (
-                <p className="mt-1 text-sm text-foreground/80 line-clamp-2">{profile.bio}</p>
-              ) : (
-                <p className="mt-1 text-sm text-muted-foreground italic">Без описания</p>
-              )}
+
+            <h1 className="mt-4 text-2xl font-bold">{profile?.username ?? "—"}</h1>
+            {profile?.bio ? (
+              <p className="mt-1.5 max-w-sm text-sm text-foreground/80">{profile.bio}</p>
+            ) : (
+              <p className="mt-1.5 text-sm italic text-muted-foreground">Без описания</p>
+            )}
+
+            <div className="mt-4 flex w-full max-w-xs gap-2">
+              <Button asChild variant="outline" className="flex-1 gap-2">
+                <Link href="/profile/settings">
+                  <Pencil className="h-4 w-4" /> Редактировать
+                </Link>
+              </Button>
+              <ShareProfileButton userId={user.id} username={profile?.username ?? ""} className="flex-1" />
             </div>
-            <Button asChild size="icon" variant="secondary" className="shrink-0">
-              <Link href="/profile/settings" aria-label="Настройки">
-                <Settings className="h-5 w-5" />
-              </Link>
-            </Button>
           </div>
 
-          <div className="mt-5 grid grid-cols-3 gap-3 text-center">
-            <Stat icon={MapPin} value={mySpots.length} label="Меток" />
-            <Stat icon={Footprints} value={visited.length} label="Посещено" />
-            <Stat icon={Heart} value={likesReceived} label="Лайков" />
-          </div>
-          <div className="mt-3 grid grid-cols-3 gap-3 text-center">
-            <Stat icon={Users} value={followersCount} label="Подписчики" />
-            <Stat icon={UserCheck} value={followingCount} label="Подписки" />
-            <Stat icon={Users} value={friendsCount} label="Друзья" />
+          <div className="mt-6 border-t pt-5">
+            <ProfileStats
+              userId={user.id}
+              spots={mySpots.length}
+              visited={visited.length}
+              likes={likesReceived}
+              followers={followersCount}
+              following={followingCount}
+              friends={friendsCount}
+            />
           </div>
         </div>
 
+        {/* ── Tabs ── */}
         <Tabs defaultValue="mine" className="mt-6">
           <TabsList>
-            <TabsTrigger value="mine">Мои</TabsTrigger>
-            <TabsTrigger value="visited">Посещённые</TabsTrigger>
-            <TabsTrigger value="liked">Лайки</TabsTrigger>
+            <TabsTrigger value="mine"><MapPin className="h-3.5 w-3.5" />Мои</TabsTrigger>
+            <TabsTrigger value="visited"><Footprints className="h-3.5 w-3.5" />Посещённые</TabsTrigger>
+            <TabsTrigger value="liked"><Heart className="h-3.5 w-3.5" />Лайки</TabsTrigger>
             <TabsTrigger value="saved"><Bookmark className="h-3.5 w-3.5" />Сохранённые</TabsTrigger>
           </TabsList>
 
@@ -131,44 +132,32 @@ export default async function MyProfilePage() {
                 <Button asChild className="mt-3"><Link href="/create"><Plus className="h-4 w-4" /> Создать</Link></Button>
               </EmptyState>
             ) : (
-              <SpotsList spots={mySpots} />
+              <SpotCardGrid spots={mySpots} />
             )}
           </TabsContent>
           <TabsContent value="visited">
             {visited.length === 0 ? (
               <EmptyState message="Вы ещё никого не посещали. Откройте карту!" />
             ) : (
-              <SpotsList spots={visited} />
+              <SpotCardGrid spots={visited} showAuthor />
             )}
           </TabsContent>
           <TabsContent value="liked">
             {liked.length === 0 ? (
               <EmptyState message="Лайкните понравившиеся места — они появятся здесь." />
             ) : (
-              <SpotsList spots={liked} />
+              <SpotCardGrid spots={liked} showAuthor />
             )}
           </TabsContent>
           <TabsContent value="saved">
             {bookmarked.length === 0 ? (
               <EmptyState message="Сохраняйте места, чтобы вернуться к ним позже." />
             ) : (
-              <SpotsList spots={bookmarked} />
+              <SpotCardGrid spots={bookmarked} showAuthor />
             )}
           </TabsContent>
         </Tabs>
       </div>
-    </div>
-  );
-}
-
-function Stat({ icon: Icon, value, label }: { icon: React.ComponentType<{ className?: string }>; value: number; label: string }) {
-  return (
-    <div className="rounded-2xl bg-background/60 backdrop-blur p-3">
-      <div className="mb-1 inline-flex h-7 w-7 items-center justify-center rounded-lg bg-primary/15 text-primary">
-        <Icon className="h-4 w-4" />
-      </div>
-      <div className="text-xl font-bold leading-none">{value}</div>
-      <div className="mt-1 text-[11px] text-muted-foreground">{label}</div>
     </div>
   );
 }
@@ -178,29 +167,6 @@ function EmptyState({ message, children }: { message: string; children?: React.R
     <div className="rounded-2xl border bg-card p-8 text-center">
       <p className="text-sm text-muted-foreground">{message}</p>
       {children}
-    </div>
-  );
-}
-
-function SpotsList({ spots }: { spots: { id: string; title: string; photo_url: string; created_at: string }[] }) {
-  return (
-    <div className="grid gap-3 sm:grid-cols-2">
-      {spots.map((s) => (
-        <Link
-          key={s.id}
-          href={`/spot/${s.id}`}
-          className="group flex gap-3 rounded-2xl border bg-card p-3 transition-colors hover:bg-muted/40"
-        >
-          <div
-            className="h-16 w-16 shrink-0 rounded-xl bg-muted"
-            style={{ backgroundImage: `url('${s.photo_url}')`, backgroundSize: "cover", backgroundPosition: "center" }}
-          />
-          <div className="min-w-0 flex-1">
-            <div className="line-clamp-2 text-sm font-medium">{s.title}</div>
-            <div className="mt-1 text-[11px] text-muted-foreground">{formatRelativeTime(s.created_at)}</div>
-          </div>
-        </Link>
-      ))}
     </div>
   );
 }
