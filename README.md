@@ -28,7 +28,8 @@ npm install
 4. Запусти второй файл — [`supabase/migrations/0002_realtime.sql`](./supabase/migrations/0002_realtime.sql) — чтобы карта обновлялась в реальном времени, когда другие пользователи создают метки.
 5. Запусти третий файл — [`supabase/migrations/0003_follows.sql`](./supabase/migrations/0003_follows.sql) — таблица подписок + view `friendships` (взаимные подписки = друзья). RLS-политика запрещает анонимам подписываться.
 6. Запусти четвёртый файл — [`supabase/migrations/0004_ratings.sql`](./supabase/migrations/0004_ratings.sql) — таблица `ratings` (1–5 звёзд) + пересборка view `spot_stats` с `avg_rating` и `ratings_count`.
-7. (Опционально) Включи гостевой вход: **Authentication → Sign In / Up → Anonymous Sign-Ins** → переключи в **Allow**. После этого на странице входа появится рабочая кнопка «Войти как гость».
+7. Запусти пятый файл — [`supabase/migrations/0005_bookmarks_visibility.sql`](./supabase/migrations/0005_bookmarks_visibility.sql) — таблица `bookmarks` (приватные закладки) + колонка `spots_visibility` в `profiles` (public/friends) и пересборка политики чтения меток с учётом видимости. **Без этой миграции кнопка «Сохранить в закладки» падает с ошибкой.**
+8. (Опционально) Включи гостевой вход: **Authentication → Sign In / Up → Anonymous Sign-Ins** → переключи в **Allow**. После этого на странице входа появится рабочая кнопка «Войти как гость».
 
 ### 4. Скопируйте API ключи
 

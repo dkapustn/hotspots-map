@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { Send } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -80,15 +81,32 @@ export function CommentsList({
               animate={{ opacity: 1, y: 0 }}
               className="flex gap-3 rounded-xl border bg-card p-3"
             >
-              <Avatar className="h-8 w-8 shrink-0">
-                {c.profiles?.avatar_url ? (
-                  <AvatarImage src={c.profiles.avatar_url} alt={c.profiles.username} />
-                ) : null}
-                <AvatarFallback>{initials(c.profiles?.username)}</AvatarFallback>
-              </Avatar>
+              {c.profiles?.id ? (
+                <Link href={`/profile/${c.profiles.id}`} className="shrink-0" aria-label={`Профиль ${c.profiles.username}`}>
+                  <Avatar className="h-8 w-8 transition-opacity hover:opacity-80">
+                    {c.profiles.avatar_url ? (
+                      <AvatarImage src={c.profiles.avatar_url} alt={c.profiles.username} />
+                    ) : null}
+                    <AvatarFallback>{initials(c.profiles.username)}</AvatarFallback>
+                  </Avatar>
+                </Link>
+              ) : (
+                <Avatar className="h-8 w-8 shrink-0">
+                  <AvatarFallback>{initials(c.profiles?.username)}</AvatarFallback>
+                </Avatar>
+              )}
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 text-xs">
-                  <span className="font-semibold">{c.profiles?.username ?? "—"}</span>
+                  {c.profiles?.id ? (
+                    <Link
+                      href={`/profile/${c.profiles.id}`}
+                      className="font-semibold hover:underline"
+                    >
+                      {c.profiles.username ?? "—"}
+                    </Link>
+                  ) : (
+                    <span className="font-semibold">{c.profiles?.username ?? "—"}</span>
+                  )}
                   <span className="text-muted-foreground">{formatRelativeTime(c.created_at)}</span>
                 </div>
                 <p className="mt-1 whitespace-pre-wrap break-words text-sm">{c.body}</p>

@@ -60,8 +60,12 @@ export function VisitButton({ spotId, visited, onVisited, className }: Props) {
       size="lg"
       onClick={handleVisit}
       disabled={loading}
-      variant={visited ? "secondary" : "default"}
-      className={cn(className)}
+      variant={visited ? "outline" : "default"}
+      className={cn(
+        visited &&
+          "border-emerald-400/60 bg-emerald-500/15 text-emerald-700 hover:bg-emerald-500/25 dark:border-emerald-500/40 dark:bg-emerald-500/15 dark:text-emerald-300",
+        className,
+      )}
     >
       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : visited ? <Check className="h-4 w-4" /> : <Footprints className="h-4 w-4" />}
       {visited ? "Посещено" : "Посетить"}

@@ -213,6 +213,8 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
             <Label className="text-sm">Тема оформления</Label>
             <div className="grid grid-cols-3 gap-2">
               <ThemeChoice icon={Sun} label="Светлая" value="light" active={theme === "light"} onClick={setTheme} />
+              <ThemeChoice icon={Moon} label="Тёмная" value="dark" active={theme === "dark"} onClick={setTheme} />
+              <ThemeChoice icon={Monitor} label="Система" value="system" active={theme === "system" || !theme} onClick={setTheme} />
             </div>
           </div>
 
@@ -247,14 +249,6 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
             <p className="text-xs text-muted-foreground">
               «Друзья» = подписаны друг на друга взаимно. Изменение применится ко всем вашим меткам.
             </p>
-          </div>
-
-          <div className="hidden">
-            <div className="grid grid-cols-3 gap-2">
-              <ThemeChoice icon={Sun} label="Светлая" value="light" active={theme === "light"} onClick={setTheme} />
-              <ThemeChoice icon={Moon} label="Тёмная" value="dark" active={theme === "dark"} onClick={setTheme} />
-              <ThemeChoice icon={Monitor} label="Система" value="system" active={theme === "system" || !theme} onClick={setTheme} />
-            </div>
           </div>
 
           <div className="flex items-center justify-between rounded-xl border p-4">
