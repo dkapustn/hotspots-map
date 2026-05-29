@@ -121,6 +121,13 @@
   @media (min-width: 768px) {
     input, textarea, select { font-size: 14px; }
   }
+
+  /* Тосты (sonner): опускаем верхнюю позицию ниже «чёлки» (safe-area)
+     и верхней стеклянной панели карты. env() здесь, в обычном стайлшите,
+     вычисляется корректно — в отличие от inline-style на iOS PWA. */
+  [data-sonner-toaster][data-y-position="top"] {
+    top: calc(env(safe-area-inset-top, 0px) + 4.75rem) !important;
+  }
 }
 
 @layer components {

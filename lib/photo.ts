@@ -73,7 +73,8 @@ export async function cropImageToFile(
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    // crossOrigin НЕ ставим: src — это локальный blob:-URL, а на iOS Safari/PWA
+    // crossOrigin="anonymous" на blob-картинке ломает загрузку (onerror).
     img.onload = () => resolve(img);
     img.onerror = () => reject(new Error("Не удалось загрузить изображение"));
     img.src = src;
