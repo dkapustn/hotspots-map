@@ -10,10 +10,12 @@ export function ShareProfileButton({
   userId,
   username,
   className,
+  iconOnly = false,
 }: {
   userId: string;
   username: string;
   className?: string;
+  iconOnly?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
 
@@ -35,6 +37,21 @@ export function ShareProfileButton({
         toast.error("Не удалось поделиться");
       }
     }
+  }
+
+  if (iconOnly) {
+    return (
+      <Button
+        type="button"
+        variant="outline"
+        size="icon"
+        onClick={handleShare}
+        aria-label="Поделиться профилем"
+        className={cn("rounded-full", className)}
+      >
+        {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Share2 className="h-4 w-4" />}
+      </Button>
+    );
   }
 
   return (

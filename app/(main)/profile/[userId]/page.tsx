@@ -96,6 +96,13 @@ export default async function PublicProfilePage({ params }: { params: { userId: 
 
         {/* ── Centered header ── */}
         <div className="relative overflow-hidden rounded-3xl border bg-gradient-to-b from-primary/10 to-card p-6">
+          <ShareProfileButton
+            userId={profile.id}
+            username={profile.username}
+            iconOnly
+            className="absolute right-4 top-4 z-10 bg-background/60 backdrop-blur"
+          />
+
           <div className="flex flex-col items-center text-center">
             <Avatar className="h-24 w-24 ring-4 ring-background shadow-xl">
               {profile.avatar_url ? <AvatarImage src={profile.avatar_url} alt="" /> : null}
@@ -109,18 +116,17 @@ export default async function PublicProfilePage({ params }: { params: { userId: 
               <p className="mt-1.5 text-sm italic text-muted-foreground">Без описания</p>
             )}
 
-            <div className="mt-4 flex w-full max-w-xs gap-2">
-              {!isOwnProfile && currentUser ? (
+            {!isOwnProfile && currentUser ? (
+              <div className="mt-4 w-full max-w-xs">
                 <FollowButton
                   userId={profile.id}
                   initialFollowing={iFollow}
                   initialFriends={friends}
                   isAnonymous={isAnonymous}
-                  className="flex-1"
+                  className="w-full"
                 />
-              ) : null}
-              <ShareProfileButton userId={profile.id} username={profile.username} className="flex-1" />
-            </div>
+              </div>
+            ) : null}
           </div>
 
           <div className="mt-6 border-t pt-5">

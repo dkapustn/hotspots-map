@@ -28,8 +28,8 @@ export function ProfileStats({
     <>
       {/* Социальные показатели — кликабельные, открывают список людей */}
       <div className="grid grid-cols-3 divide-x divide-border">
-        <PeopleStat value={followers} label="Подписчики" onClick={() => setOpenType("followers")} />
         <PeopleStat value={following} label="Подписки" onClick={() => setOpenType("following")} />
+        <PeopleStat value={followers} label="Подписчики" onClick={() => setOpenType("followers")} />
         <PeopleStat value={friends} label="Друзья" onClick={() => setOpenType("friends")} />
       </div>
 

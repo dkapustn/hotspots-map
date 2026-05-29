@@ -108,11 +108,13 @@
     .pb-safe-nav { padding-bottom: 2rem; }
   }
 
-  /* iOS-friendly scroll */
+  /* iOS-friendly scroll: вертикальный скролл, горизонтальный запрещён
+     (иначе на iOS весь экран можно «таскать» вбок при малейшем переполнении). */
   .scroll-area {
     overflow-y: scroll;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
+    overscroll-behavior: contain;
     scroll-padding-bottom: 6rem;
   }
 

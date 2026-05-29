@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Pencil, Plus, Bookmark, MapPin, Footprints, Heart } from "lucide-react";
+import { Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { attachAuthor } from "@/lib/spot-helpers";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -81,6 +81,13 @@ export default async function MyProfilePage() {
       <div className="mx-auto max-w-2xl px-4 md:px-8 pt-safe-content">
         {/* ── Centered header ── */}
         <div className="relative overflow-hidden rounded-3xl border bg-gradient-to-b from-primary/10 to-card p-6">
+          <ShareProfileButton
+            userId={user.id}
+            username={profile?.username ?? ""}
+            iconOnly
+            className="absolute right-4 top-4 z-10 bg-background/60 backdrop-blur"
+          />
+
           <div className="flex flex-col items-center text-center">
             <Avatar className="h-24 w-24 ring-4 ring-background shadow-xl">
               {profile?.avatar_url ? <AvatarImage src={profile.avatar_url} alt="" /> : null}
@@ -93,15 +100,6 @@ export default async function MyProfilePage() {
             ) : (
               <p className="mt-1.5 text-sm italic text-muted-foreground">Без описания</p>
             )}
-
-            <div className="mt-4 flex w-full max-w-xs gap-2">
-              <Button asChild variant="outline" className="flex-1 gap-2">
-                <Link href="/profile/settings">
-                  <Pencil className="h-4 w-4" /> Редактировать
-                </Link>
-              </Button>
-              <ShareProfileButton userId={user.id} username={profile?.username ?? ""} className="flex-1" />
-            </div>
           </div>
 
           <div className="mt-6 border-t pt-5">
@@ -120,10 +118,10 @@ export default async function MyProfilePage() {
         {/* ── Tabs ── */}
         <Tabs defaultValue="mine" className="mt-6">
           <TabsList>
-            <TabsTrigger value="mine"><MapPin className="h-3.5 w-3.5" />Мои</TabsTrigger>
-            <TabsTrigger value="visited"><Footprints className="h-3.5 w-3.5" />Посещённые</TabsTrigger>
-            <TabsTrigger value="liked"><Heart className="h-3.5 w-3.5" />Лайки</TabsTrigger>
-            <TabsTrigger value="saved"><Bookmark className="h-3.5 w-3.5" />Сохранённые</TabsTrigger>
+            <TabsTrigger value="mine" className="px-1 text-xs sm:text-sm">Мои</TabsTrigger>
+            <TabsTrigger value="visited" className="px-1 text-xs sm:text-sm">Посещённые</TabsTrigger>
+            <TabsTrigger value="liked" className="px-1 text-xs sm:text-sm">Лайки</TabsTrigger>
+            <TabsTrigger value="saved" className="px-1 text-xs sm:text-sm">Закладки</TabsTrigger>
           </TabsList>
 
           <TabsContent value="mine">
