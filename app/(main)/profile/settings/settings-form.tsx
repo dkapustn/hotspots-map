@@ -21,7 +21,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Spinner } from "@/components/ui/spinner";
 import { createClient } from "@/lib/supabase/client";
 import { AVATARS_BUCKET, BIO_MAX, USERNAME_MAX, USERNAME_MIN } from "@/lib/constants";
 import { compressImage } from "@/lib/photo";
@@ -118,31 +117,35 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
     <div className="space-y-5">
       {/* Profile */}
       <Card>
-        <CardHeader className="flex-row items-start justify-between space-y-0">
-          <div className="min-w-0 space-y-1.5">
-            <CardTitle>Профиль</CardTitle>
-            <CardDescription className="truncate">{email}</CardDescription>
-          </div>
+        <CardHeader className="flex-row items-center justify-between space-y-0">
+          <CardTitle>Профиль</CardTitle>
           <Button
-            size="icon"
+            size="sm"
             onClick={handleSave}
             disabled={saving}
             aria-label="Сохранить профиль"
-            title="Сохранить профиль"
-            className="shrink-0"
+            className="gap-1.5"
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+            Сохранить
           </Button>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-20 w-20">
-              {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
-              <AvatarFallback className="text-lg">{initials(username)}</AvatarFallback>
-            </Avatar>
-            <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-lg border bg-background px-3 text-sm font-medium transition-colors hover:bg-muted">
-              {uploadingAvatar ? <Spinner /> : <Camera className="h-4 w-4" />}
-              {uploadingAvatar ? "Загружаем..." : "Изменить аватар"}
+
+        <CardContent className="space-y-5">
+          {/* Avatar — tap to change, camera badge */}
+          <div className="flex flex-col items-center text-center">
+            <label className="group relative cursor-pointer">
+              <Avatar className="h-24 w-24 ring-4 ring-background shadow-lg transition-transform group-active:scale-95">
+                {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
+                <AvatarFallback className="text-2xl">{initials(username)}</AvatarFallback>
+              </Avatar>
+              <span className="absolute -bottom-1 -right-1 flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md ring-4 ring-card transition-transform group-hover:scale-105">
+                {uploadingAvatar ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Camera className="h-4 w-4" />
+                )}
+              </span>
               <input
                 type="file"
                 accept="image/*"
@@ -150,11 +153,12 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
                 onChange={(e) => {
                   const f = e.target.files?.[0];
                   if (f) setCropFile(f);
-                  // Сброс, чтобы повторный выбор того же файла снова сработал.
                   e.target.value = "";
                 }}
               />
             </label>
+            <p className="mt-2.5 text-sm font-medium">{username || "—"}</p>
+            <p className="text-xs text-muted-foreground">{email}</p>
           </div>
 
           <AvatarCropper
@@ -167,7 +171,7 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
             }}
           />
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <Label htmlFor="username">Имя пользователя</Label>
             <Input
               id="username"
@@ -176,11 +180,17 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
               minLength={USERNAME_MIN}
               maxLength={USERNAME_MAX}
               pattern="^[a-zA-Z0-9_.]+$"
+              placeholder="ваш_ник"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="bio">Био</Label>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="bio">О себе</Label>
+              <span className="text-xs tabular-nums text-muted-foreground">
+                {bio.length}/{BIO_MAX}
+              </span>
+            </div>
             <Textarea
               id="bio"
               value={bio}
@@ -188,7 +198,6 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
               maxLength={BIO_MAX}
               placeholder="Несколько слов о себе"
             />
-            <div className="text-right text-xs text-muted-foreground">{bio.length}/{BIO_MAX}</div>
           </div>
         </CardContent>
       </Card>
