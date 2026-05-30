@@ -7,7 +7,6 @@ import { MapPin, Plus, Search, X } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { APP_NAME } from "@/lib/constants";
-import { Onboarding } from "@/components/onboarding/Onboarding";
 import { NotificationsBell } from "@/components/notifications/NotificationsBell";
 import { createClient } from "@/lib/supabase/client";
 import { attachAuthor } from "@/lib/spot-helpers";
@@ -80,7 +79,6 @@ export function MapScreen({
 
   return (
     <div className="relative h-full w-full">
-      <Onboarding />
 
       {/* Top bar (mobile) — Liquid Glass pills */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-30 flex items-center gap-2 px-3 pt-[calc(env(safe-area-inset-top,0px)+0.625rem)] pb-2 md:hidden">

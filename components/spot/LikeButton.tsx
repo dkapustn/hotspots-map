@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { vibrate } from "@/lib/photo";
+import { notifyGuest } from "@/lib/guest";
 import { cn } from "@/lib/utils";
 
 export function LikeButton({
@@ -12,15 +13,21 @@ export function LikeButton({
   liked,
   onChange,
   className,
+  isGuest,
 }: {
   spotId: string;
   liked: boolean;
   onChange: (v: boolean) => void;
   className?: string;
+  isGuest?: boolean;
 }) {
   const [pending, setPending] = useState(false);
 
   async function handle() {
+    if (isGuest) {
+      notifyGuest();
+      return;
+    }
     setPending(true);
     const next = !liked;
     onChange(next); // optimistic

@@ -35,6 +35,7 @@ export function SpotDetail({
   initialUserRating,
   initialComments,
   currentUserId,
+  isGuest = false,
 }: {
   spot: SpotWithAuthor;
   stats: {
@@ -50,6 +51,7 @@ export function SpotDetail({
   initialUserRating: number | null;
   initialComments: CommentRow[];
   currentUserId: string | null;
+  isGuest?: boolean;
 }) {
   const [liked, setLiked] = useState(initialLiked);
   const [likesCount, setLikesCount] = useState(stats.likes_count);
@@ -122,6 +124,7 @@ export function SpotDetail({
           <VisitButton
             spotId={spot.id}
             visited={visited}
+            isGuest={isGuest}
             onVisited={() => {
               if (!visited) setVisitsCount((c) => c + 1);
               setVisited(true);
@@ -131,6 +134,7 @@ export function SpotDetail({
           <LikeButton
             spotId={spot.id}
             liked={liked}
+            isGuest={isGuest}
             onChange={(v) => {
               setLiked(v);
               setLikesCount((c) => c + (v ? 1 : -1));
@@ -146,6 +150,7 @@ export function SpotDetail({
             <BookmarkButton
               spotId={spot.id}
               bookmarked={bookmarked}
+              isGuest={isGuest}
               onChange={setBookmarked}
               className="h-12 w-12 shrink-0 px-0"
             />
@@ -175,6 +180,7 @@ export function SpotDetail({
             initialUserValue={initialUserRating}
             initialAverage={Number(stats.avg_rating ?? 0)}
             initialCount={stats.ratings_count ?? 0}
+            isGuest={isGuest}
           />
         )}
 
@@ -190,6 +196,7 @@ export function SpotDetail({
           <CommentsList
             spotId={spot.id}
             initialComments={comments}
+            isGuest={isGuest}
             onAdd={(c) => setComments((prev) => [c as any, ...prev])}
           />
         </div>

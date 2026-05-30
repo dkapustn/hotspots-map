@@ -23,10 +23,12 @@ export function CommentsList({
   spotId,
   initialComments,
   onAdd,
+  isGuest,
 }: {
   spotId: string;
   initialComments: CommentRow[];
   onAdd: (c: CommentRow) => void;
+  isGuest?: boolean;
 }) {
   const [comments, setComments] = useState(initialComments);
   const [body, setBody] = useState("");
@@ -55,18 +57,24 @@ export function CommentsList({
 
   return (
     <div className="space-y-4">
-      <form onSubmit={submit} className="flex items-start gap-2">
-        <Textarea
-          placeholder="Поделитесь впечатлением..."
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          maxLength={COMMENT_MAX}
-          className="min-h-[60px] flex-1"
-        />
-        <Button type="submit" size="icon" disabled={sending || !body.trim()} className="h-11 w-11 shrink-0">
-          {sending ? <Spinner /> : <Send className="h-4 w-4" />}
-        </Button>
-      </form>
+      {isGuest ? (
+        <div className="rounded-xl border bg-muted/30 p-3 text-center text-sm text-muted-foreground">
+          Войдите в аккаунт, чтобы оставлять комментарии.
+        </div>
+      ) : (
+        <form onSubmit={submit} className="flex items-start gap-2">
+          <Textarea
+            placeholder="Поделитесь впечатлением..."
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            maxLength={COMMENT_MAX}
+            className="min-h-[60px] flex-1"
+          />
+          <Button type="submit" size="icon" disabled={sending || !body.trim()} className="h-11 w-11 shrink-0">
+            {sending ? <Spinner /> : <Send className="h-4 w-4" />}
+          </Button>
+        </form>
+      )}
 
       {comments.length === 0 ? (
         <p className="text-center text-sm text-muted-foreground py-6">

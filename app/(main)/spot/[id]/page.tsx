@@ -92,6 +92,7 @@ export default async function SpotPage({ params }: { params: { id: string } }) {
       initialBookmarked={!!userBookmarkRes.data}
       initialComments={(commentsRes.data ?? []) as any}
       currentUserId={user?.id ?? null}
+      isGuest={user?.is_anonymous === true}
     />
   );
 }

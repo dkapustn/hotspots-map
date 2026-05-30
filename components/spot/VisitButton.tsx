@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { getCurrentPosition, formatDistance } from "@/lib/geo";
 import { vibrate } from "@/lib/photo";
+import { notifyGuest } from "@/lib/guest";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -12,12 +13,17 @@ interface Props {
   visited: boolean;
   onVisited: () => void;
   className?: string;
+  isGuest?: boolean;
 }
 
-export function VisitButton({ spotId, visited, onVisited, className }: Props) {
+export function VisitButton({ spotId, visited, onVisited, className, isGuest }: Props) {
   const [loading, setLoading] = useState(false);
 
   async function handleVisit() {
+    if (isGuest) {
+      notifyGuest();
+      return;
+    }
     if (visited) {
       toast.info("Вы уже посетили это место!");
       return;

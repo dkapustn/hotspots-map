@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { vibrate } from "@/lib/photo";
+import { notifyGuest } from "@/lib/guest";
 import { cn } from "@/lib/utils";
 
 export function BookmarkButton({
@@ -12,15 +13,21 @@ export function BookmarkButton({
   bookmarked,
   onChange,
   className,
+  isGuest,
 }: {
   spotId: string;
   bookmarked: boolean;
   onChange: (v: boolean) => void;
   className?: string;
+  isGuest?: boolean;
 }) {
   const [pending, setPending] = useState(false);
 
   async function handle() {
+    if (isGuest) {
+      notifyGuest();
+      return;
+    }
     if (pending) return;
     setPending(true);
     const next = !bookmarked;

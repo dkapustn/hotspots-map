@@ -5,15 +5,17 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { vibrate } from "@/lib/photo";
+import { notifyGuest } from "@/lib/guest";
 
 interface Props {
   spotId: string;
   initialUserValue: number | null;
   initialAverage: number;
   initialCount: number;
+  isGuest?: boolean;
 }
 
-export function SpotRating({ spotId, initialUserValue, initialAverage, initialCount }: Props) {
+export function SpotRating({ spotId, initialUserValue, initialAverage, initialCount, isGuest }: Props) {
   const [userValue, setUserValue] = useState<number | null>(initialUserValue);
   const [average, setAverage] = useState<number>(initialAverage);
   const [count, setCount] = useState<number>(initialCount);
@@ -21,6 +23,10 @@ export function SpotRating({ spotId, initialUserValue, initialAverage, initialCo
   const [pending, setPending] = useState(false);
 
   async function handleRate(value: number) {
+    if (isGuest) {
+      notifyGuest();
+      return;
+    }
     if (pending) return;
     setPending(true);
     vibrate(8);
