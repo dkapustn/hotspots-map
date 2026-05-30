@@ -11,6 +11,7 @@ import {
   Moon,
   Monitor,
   Save,
+  Palette,
   Map as MapIcon,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -117,9 +118,21 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
     <div className="space-y-5">
       {/* Profile */}
       <Card>
-        <CardHeader>
-          <CardTitle>Профиль</CardTitle>
-          <CardDescription>{email}</CardDescription>
+        <CardHeader className="flex-row items-start justify-between space-y-0">
+          <div className="min-w-0 space-y-1.5">
+            <CardTitle>Профиль</CardTitle>
+            <CardDescription className="truncate">{email}</CardDescription>
+          </div>
+          <Button
+            size="icon"
+            onClick={handleSave}
+            disabled={saving}
+            aria-label="Сохранить профиль"
+            title="Сохранить профиль"
+            className="shrink-0"
+          >
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+          </Button>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center gap-4">
@@ -180,11 +193,13 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
         </CardContent>
       </Card>
 
-      {/* Behavior */}
+      {/* Appearance */}
       <Card>
         <CardHeader>
-          <CardTitle>Поведение</CardTitle>
-          <CardDescription>Настройте, как приложение работает для вас.</CardDescription>
+          <CardTitle className="flex items-center gap-2">
+            <Palette className="h-5 w-5 text-primary" /> Оформление
+          </CardTitle>
+          <CardDescription>Акцентный цвет и тема приложения.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <AccentPicker />
@@ -212,11 +227,6 @@ export function SettingsForm({ initialProfile, email }: { initialProfile: Profil
           <MapStylePicker />
         </CardContent>
       </Card>
-
-      <Button size="lg" className="w-full" onClick={handleSave} disabled={saving}>
-        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-        Сохранить изменения
-      </Button>
 
       {/* Danger zone */}
       <Card>
